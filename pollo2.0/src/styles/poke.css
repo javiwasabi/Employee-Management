@@ -1,0 +1,150 @@
+.container {
+  width: 350px;
+  position: absolute;
+  transform: translate(-50%, -50%);
+  top: 40%;
+  left: 50%;
+}
+
+#card {
+  position: relative;
+  width: 100%;
+  padding: 30px 20px;
+  box-shadow: 0 20px 30px rgba(0, 0, 0, 0.916);
+  border-radius: 10%;
+  background-color: #fff;
+  transition: transform 0.3s ease-in-out;
+}
+
+#card:hover {
+  transform: scale(1.05);
+}
+
+#card img {
+  display: block;
+  width: 220px;
+  max-height: 220px;
+  position: relative;
+  margin: 20px auto;
+}
+
+.hp {
+  width: 80px;
+  background-color: #ffffff;
+  text-align: center;
+  padding: 8px 0;
+  border-radius: 15%;
+  margin-left: auto;
+  font-weight: 400;
+}
+
+.poke-name {
+  text-align: center;
+  font-weight: 600;
+}
+
+.types {
+  display: flex;
+  justify-content: space-around;
+  margin: 20px 0 40px 0;
+}
+
+.hp span,
+.types span {
+  font-size: 17px;
+  letter-spacing: 0.4px;
+  font-weight: 600;
+}
+
+.types span {
+  padding: 5px 20px;
+  border-radius: 15%;
+  color: #ffffff;
+}
+
+.stats {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  text-align: center;
+}
+
+.stats p {
+  color: #404060;
+}
+
+#btn {
+  display: block;
+  padding: 15px 60px;
+  font-size: 18px;
+  background-color: #101010;
+  color: #ffffff;
+  position: relative;
+  margin: 50px auto;
+  cursor: pointer;
+  border: none;
+  box-shadow: 0 20px 30px rgba(0, 0, 0, 0.878);
+  border-radius: 20%;
+}
+
+@media (max-width: 768px) {
+  .container {
+    width: 90%; /* Ajusta el ancho para pantallas medianas */
+    top: 50%; /* Centra mejor en tablets */
+    transform: translate(-50%, -50%);
+  }
+
+  #card {
+    padding: 20px 15px; /* Reduce el padding */
+    border-radius: 15px; /* Ajusta el radio del borde */
+  }
+
+  #card img {
+    width: 180px; /* Reduce el tamaño de la imagen */
+  }
+
+  .types {
+    flex-wrap: wrap; /* Permite que las etiquetas de tipo se ajusten */
+    gap: 10px;
+    justify-content: center;
+  }
+
+  #btn {
+    padding: 12px 50px; /* Ajusta el tamaño del botón */
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    width: 95%; /* Ocupa casi todo el ancho en móviles */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  #card {
+    padding: 15px 10px;
+    border-radius: 10px;
+  }
+
+  #card img {
+    width: 150px; /* Reduce aún más la imagen */
+  }
+
+  .hp {
+    width: 60px;
+    font-size: 14px;
+    padding: 5px 0;
+  }
+
+  .types span {
+    font-size: 14px;
+    padding: 5px 15px; /* Reduce los márgenes */
+  }
+
+  #btn {
+    padding: 10px 40px;
+    font-size: 14px;
+  }
+}
