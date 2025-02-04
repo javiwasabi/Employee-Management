@@ -19,22 +19,22 @@ exports.login = async (req, res) => {
     try {
         const { rut, password } = req.body;
 
-        // Buscar usuario por RUT
+
         const user = await User.findOne({ rut });
         if (!user) {
             return res.status(401).json({ message: "Credenciales inválidas" });
         }
 
-        // Comparar contraseñas
+
         const isMatch = await bcrypt.compare(password, user.password);
         console.log("¿Contraseña válida?", isMatch);
         if (!isMatch) {
             return res.status(401).json({ message: "Credenciales inválidas" });
         }
 
-        // Crear token con permisos del usuario
+  
         const token = jwt.sign(
-            { id: user._id, permissions: user.permissions },  // <--- Cambié 'role' por 'permissions'
+            { id: user._id, permissions: user.permissions },  
             secret,
             { expiresIn: "1h" }
         );
@@ -42,7 +42,7 @@ exports.login = async (req, res) => {
         res.json({ token });
 
     } catch (error) {
-        console.error(error); // <-- Esto ayuda a ver el error en la consola del backend
+        console.error(error); 
         res.status(500).json({ message: "Error en el inicio de sesión" });
     }
 };

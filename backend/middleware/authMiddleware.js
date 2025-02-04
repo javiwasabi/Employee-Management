@@ -12,7 +12,6 @@ const authenticate = async (req, res, next) => {
 
         if (!user) return res.status(403).json({ message: "Usuario no encontrado" });
 
-        // Si el usuario es supervisor, tiene acceso total
         const isSupervisor = user.cargo.toLowerCase() === "supervisor";
         req.user = {
             id: user._id,
@@ -26,7 +25,6 @@ const authenticate = async (req, res, next) => {
     }
 };
 
-// Middleware dinámico para verificar permisos
 const authorize = (requiredPermission) => (req, res, next) => {
     if (!req.user.permissions.includes(requiredPermission)) {
         return res.status(403).json({ message: "No tienes permiso para acceder" });
