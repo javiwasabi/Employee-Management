@@ -3,34 +3,34 @@ import axios from "axios";
 import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
 
 const ShowWorkers: React.FC = () => {
-  const [searchRut, setSearchRut] = useState(""); // Para buscar por RUT
-  const [searchLastName, setSearchLastName] = useState(""); // Para buscar por apellido
-  const [workers, setWorkers] = useState<any[]>([]); // Lista de trabajadores
-  const [filteredWorkers, setFilteredWorkers] = useState<any[]>([]); // Trabajadores filtrados
-  const [lastNames, setLastNames] = useState<{ [key: string]: string[] }>({}); // Apellidos agrupados
-  const [filteredLastNames, setFilteredLastNames] = useState<string[]>([]); // Apellidos filtrados
-  const [selectedWorker, setSelectedWorker] = useState<any | null>(null); // Trabajador seleccionado
+  const [searchRut, setSearchRut] = useState(""); 
+  const [searchLastName, setSearchLastName] = useState(""); 
+  const [workers, setWorkers] = useState<any[]>([]); 
+  const [filteredWorkers, setFilteredWorkers] = useState<any[]>([]); 
+  const [lastNames, setLastNames] = useState<{ [key: string]: string[] }>({}); 
+  const [filteredLastNames, setFilteredLastNames] = useState<string[]>([]);
+  const [selectedWorker, setSelectedWorker] = useState<any | null>(null); 
   // Componente para redirigir a login si no está autenticado
   const AuthCheck = () => {
     const token = localStorage.getItem("token");
   
     if (!token) {
-      return <Navigate to="/login" />;  // Si no hay token, redirige a /login
+      return <Navigate to="/login" />;  
     }
   
-    return <Navigate to="/" />; // Si hay token, redirige a la página principal
+    return <Navigate to="/" />; 
   };
 
-  // Obtener todos los trabajadores al cargar el componente
+
   useEffect(() => {
     const fetchWorkers = async () => {
       try {
-        const response = await axios.get("/users"); // Asegúrate de que el endpoint sea correcto
+        const response = await axios.get("/users"); 
         const workersData = response.data;
         setWorkers(workersData);
         setFilteredWorkers(workersData);
 
-        // Agrupar apellidos por letra inicial
+
         const groupedLastNames: { [key: string]: string[] } = {};
         workersData.forEach((worker: any) => {
           const firstLetter = worker.apellidos.charAt(0).toUpperCase();
