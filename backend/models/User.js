@@ -1,5 +1,4 @@
-const mongoose = require('mongoose');
-
+const mongoose = require("mongoose"); 
 const userSchema = new mongoose.Schema({
     rut: {
         type: String,
@@ -22,22 +21,20 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    FeriadoLegal: {
+    feriadoLegal: {
         type: Number,
         default: 0
     },
-    DiasAdministrativos: {
+    diasAdministrativos: {
         type: Number,
         default: 0
     },
-    HorasCompensatorias: {
+    horasCompensatorias: {
         type: Number,
         default: 0
     },
     email: {
         type: String,
-    
-
     },
     password: {
         type: String,
@@ -46,7 +43,11 @@ const userSchema = new mongoose.Schema({
     permissions: {
         type: [String], 
         default: ["ver"]  
-    }
+    },
+    permisos: [{ 
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: 'Permiso' 
+    }]
 }, { timestamps: true });
 
 module.exports = mongoose.model('User', userSchema);

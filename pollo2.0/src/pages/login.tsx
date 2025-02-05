@@ -4,7 +4,7 @@ import axios from "axios";
 
 export const Login = () => {
   const [formData, setFormData] = useState({ rut: "", password: "" });
-  const [error, setError] = useState(""); // Estado para manejar errores
+  const [error, setError] = useState(""); 
   const navigate = useNavigate();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -13,7 +13,7 @@ export const Login = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError(""); // Reinicia el error antes de una nueva petición
+    setError(""); 
 
     try {
       const res = await axios.post("http://localhost:3001/auth/login", formData);

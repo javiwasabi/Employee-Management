@@ -18,5 +18,6 @@ router
 router
     .delete('/', usersController.deleteUser);  
 
+router.get('/:rut', usersController.getUserByRut);
 
 module.exports = router;

@@ -45,7 +45,7 @@ const First: React.FC = () => {
               </p>
             </div>
             <div className="m-2">
-              <ButtonNext id="next-button" onClick={() => navigate("/p")} />
+              <ButtonNext id="next-button" onClick={() => navigate("/permisos")} />
             </div>
           </div>
         </div>

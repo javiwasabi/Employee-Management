@@ -1,7 +1,7 @@
 const User = require('../models/User');
 const asyncHandler = require('express-async-handler');
 const bcrypt = require('bcryptjs');
-
+const Permiso = require('../models/Permisos');
 const getAllUsers = asyncHandler(async (req, res) => {
     const users = await User.find();
 
@@ -23,6 +23,29 @@ const getAllUsers = asyncHandler(async (req, res) => {
         totalUsers: users.length, 
         users: users
     });
+});
+
+
+const getUserByRut = asyncHandler(async (req, res) => {
+    const { rut } = req.params;
+
+    try {
+        const user = await User.findOne({ rut });
+
+        if (!user) {
+            return res.status(404).json({ message: `No se encontró un usuario con el RUT: ${rut}` });
+        }
+        const permisos = await Permiso.find({ rut });
+
+
+        res.status(200).json({
+            user: user,
+            permisos: permisos,
+        });
+
+    } catch (error) {
+        res.status(500).json({ message: "Error al obtener los datos del usuario y sus permisos", error });
+    }
 });
 
 // @desc Create new users
@@ -242,5 +265,6 @@ module.exports = {
     deductHoliday,
     deductAdministrativeDays,
     addCompensatoryHours,
-    deleteUser
+    deleteUser,
+    getUserByRut
 };

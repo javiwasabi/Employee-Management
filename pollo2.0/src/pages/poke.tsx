@@ -12,7 +12,7 @@ interface User {
   HorasCompensatorias?: number;
 }
 const PokemonCard: React.FC = () => {
-  // Estado para los campos del formulario
+
   const [rut, setRut] = useState('');
   const [apellidos, setApellidos] = useState('');
   const [nombres, setNombres] = useState('');
@@ -24,7 +24,7 @@ const PokemonCard: React.FC = () => {
   const [error, setError] = useState<string>('');
   const [successMessage, setSuccessMessage] = useState<string>('');
 
-  // Función para manejar el envío del formulario
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -39,7 +39,6 @@ const PokemonCard: React.FC = () => {
     };
 
     try {
-      // Hacer la solicitud POST al backend
       const response = await axios.post('http://localhost:3001/users', newUser);
       setSuccessMessage(`User created: ${response.data.user.rut}`);
       setError('');
@@ -116,7 +115,6 @@ const PokemonCard: React.FC = () => {
         <button type="submit">Add User</button>
       </form>
 
-      {/* Mensajes de éxito o error */}
       {error && <p style={{ color: 'red' }}>{error}</p>}
       {successMessage && <p style={{ color: 'green' }}>{successMessage}</p>}
     </div>
