@@ -7,15 +7,9 @@ const ShowWorkers: React.FC = () => {
   const [selectedWorker, setSelectedWorker] = useState<any | null>(null); 
   const [permissions, setPermissions] = useState<any[]>([]); 
   const [showPermissionsPopup, setShowPermissionsPopup] = useState(false);
+  const [training, setTraining] = useState<any[]>([]); 
+  const [showtraining, setShowtraining] = useState(false);
 
-
-  const AuthCheck = () => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      return <Navigate to="/login" />;
-    }
-    return <Navigate to="/" />;
-  };
 
   const fetchWorkerByRut = async (rut: string) => {
     if (rut.trim().length === 0) {
@@ -48,12 +42,31 @@ const ShowWorkers: React.FC = () => {
       setPermissions([]); 
     }
   };
+  const fetchtrainingsByRut = async (rut: string) => {
+    if (rut.trim().length === 0) {
+      setTraining([]);
+      return;
+    }
+  
+    try {
+      const response = await axios.get(`http://localhost:3001/capacitaciones/listar/${rut}`);
+      console.log("Capacitaciones del trabajador:", response.data); // Verifica la estructura de los datos
+      setTraining(response.data.capacitaciones); // Acceder correctamente a "capacitaciones"
+    } catch (error) {
+      console.error("Error al obtener las capacitaciones del trabajador:", error);
+      setTraining([]); 
+    }
+  };
+  
+  
 
  
   useEffect(() => {
     if (searchRut.trim().length > 0) {
       fetchWorkerByRut(searchRut);
       fetchPermissionsByRut(searchRut); 
+      fetchtrainingsByRut(searchRut); 
+      
     } else {
       setSelectedWorker(null); 
       setPermissions([]); 
@@ -73,7 +86,6 @@ const ShowWorkers: React.FC = () => {
         </h2>
 
 
-        <div className="w-full flex space-x-4 mb-4">
           <input
             type="text"
             placeholder="Buscar por RUT"
@@ -81,13 +93,8 @@ const ShowWorkers: React.FC = () => {
             onChange={(e) => setSearchRut(e.target.value)}
             className="w-[70%] p-2 rounded-lg bg-white/10 text-white placeholder-gray-300 focus:outline-none"
           />
-          <button
-            onClick={() => fetchWorkerByRut(searchRut)} // Ahora la función está disponible
-            className="w-[20%] p-2 rounded-lg bg-blue-500 text-white hover:bg-blue-600"
-          >
-            Buscar
-          </button>
-        </div>
+      
+
       </div>
 
 
@@ -115,6 +122,12 @@ const ShowWorkers: React.FC = () => {
             >
               Ver Permisos
             </button>
+            <button
+              onClick={() => setShowtraining(true)} // Abre el popup de capacitaciones
+              className="mt-4 w-full p-2 rounded-lg bg-blue-500 text-white hover:bg-blue-600"
+            >
+              Ver Capacitaciones
+            </button>
 
             <button
               onClick={() => setSelectedWorker(null)}
@@ -126,26 +139,29 @@ const ShowWorkers: React.FC = () => {
         </div>
       )}
 
-
-{showPermissionsPopup && permissions.length > 0 && (
+{showPermissionsPopup && (
   <div className="fixed inset-0 bg-black/50 flex items-center justify-center">
     <div className="bg-white p-6 rounded-lg shadow-lg max-w-4xl w-full">
       <h3 className="text-xl font-bold mb-4 text-center">Permisos del Funcionario</h3>
-      
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-        {permissions.map((permiso, index) => (
-          permiso.permisos.map((permisoItem: any, subIndex: number) => (
-            <div key={`${index}-${subIndex}`} className="border p-4 rounded-lg shadow-md bg-gray-100">
-              <p><strong>Tipo:</strong> {permisoItem.tipoPermiso}</p>
-              <p><strong>Estado:</strong> {permisoItem.estado}</p>
-              <p><strong>Solicitud:</strong> {new Date(permisoItem.fechaSolicitud).toLocaleDateString()}</p>
-              <p><strong>Inicio:</strong> {new Date(permisoItem.fechaInicio).toLocaleDateString()}</p>
-              <p><strong>Término:</strong> {permisoItem.fechaTermino ? new Date(permisoItem.fechaTermino).toLocaleDateString() : "No especificada"}</p>
-              <p><strong>Días:</strong> {permiso.nDias}</p>
-            </div>
-          ))
-        ))}
-      </div>
+
+      {permissions.length > 0 ? (
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+          {permissions.map((permiso, index) => (
+            permiso.permisos.map((permisoItem: any, subIndex: number) => (
+              <div key={`${index}-${subIndex}`} className="border p-4 rounded-lg shadow-md bg-gray-100">
+                <p><strong>Tipo:</strong> {permisoItem.tipoPermiso}</p>
+                <p><strong>Estado:</strong> {permisoItem.estado}</p>
+                <p><strong>Solicitud:</strong> {new Date(permisoItem.fechaSolicitud).toLocaleDateString()}</p>
+                <p><strong>Inicio:</strong> {new Date(permisoItem.fechaInicio).toLocaleDateString()}</p>
+                <p><strong>Término:</strong> {permisoItem.fechaTermino ? new Date(permisoItem.fechaTermino).toLocaleDateString() : "No especificada"}</p>
+                <p><strong>Días:</strong> {permisoItem.nDias}</p>
+              </div>
+            ))
+          ))}
+        </div>
+      ) : (
+        <p className="text-center text-gray-600">No hay permisos</p>
+      )}
 
       <button
         onClick={() => setShowPermissionsPopup(false)}
@@ -156,6 +172,38 @@ const ShowWorkers: React.FC = () => {
     </div>
   </div>
 )}
+
+{showtraining && (
+  <div className="fixed inset-0 bg-black/50 flex items-center justify-center">
+    <div className="bg-white p-6 rounded-lg shadow-lg max-w-4xl w-full">
+      <h3 className="text-xl font-bold mb-4 text-center">Capacitaciones del Funcionario</h3>
+      
+      {training.length > 0 ? (
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+          {training.map((capacitacion, index) => (
+            <div key={index} className="border p-4 rounded-lg shadow-md bg-gray-100">
+              <p><strong>Nombre de la Capacitación:</strong> {capacitacion.nombreCapacitacion}</p>
+              <p><strong>Horas Realizadas:</strong> {capacitacion.horasRealizadas}</p>
+              <p><strong>Nota:</strong> {capacitacion.nota}</p>
+              <p><strong>Peso Relativo:</strong> {capacitacion.PesoRelativo}</p>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <p className="text-center text-gray-600">No hay capacitaciones</p>
+      )}
+
+      <button
+        onClick={() => setShowtraining(false)}  // Cerrar el pop-up
+        className="mt-6 w-full p-2 rounded-lg bg-blue-500 text-white hover:bg-blue-600"
+      >
+        Cerrar
+      </button>
+    </div>
+  </div>
+)}
+
+
 
     </div>
   );

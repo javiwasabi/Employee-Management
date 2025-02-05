@@ -4,13 +4,13 @@ import ReactDOM from "react-dom/client";
 import { BrowserRouter as Router, Route, Routes, Navigate, BrowserRouter } from "react-router-dom";
 import './index.css';
 import First from "./pages/fPage";
-
 import LastP from "./pages/disponibilidad";
 import PokemonCard from "./pages/poke";
 import ShoWorkers from "./pages/visualizacion";
 import { Login } from "./pages/login";
 import ProtectedRoute from "./components/ProtectedRoute"; 
 import AgregarPermiso from "./pages/permisos";
+import AgregarCapacitacion from "./pages/capacitacion";
 document.title = "Pokemón vs Tecnología";
 
 
@@ -32,6 +32,7 @@ root.render(
               <Route path="/poke" element={<PokemonCard />} />
               <Route path="/usuarios" element={<ShoWorkers />} />
               <Route path="/permisos" element={<AgregarPermiso />} />
+              <Route path="/capacitaciones" element={<AgregarCapacitacion />} />
             </Route>
           </Routes>
         </BrowserRouter>

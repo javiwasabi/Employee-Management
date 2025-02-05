@@ -59,7 +59,7 @@ const First: React.FC = () => {
             </p>
           </div>
           <div className="m-2">
-            <ButtonNext id="next-button" onClick={() => navigate("/stats")} />
+            <ButtonNext id="next-button" onClick={() => navigate("/capacitaciones")} />
           </div>
           </div>
           {/* Segunda fila: Card 3 */}

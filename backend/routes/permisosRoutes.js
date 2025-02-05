@@ -3,23 +3,13 @@ const router = express.Router();
 const { agregarPermiso } = require('../controllers/permisosController');
 const { getPermisos, getPermisosPorRut } = require('../controllers/permisosController');
 
-
+// Ruta para obtener todos los permisos
 router.get('/listar', getPermisos);
-
-app.get('/permisos/listar/:rut', async (req, res) => {
-    const rut = req.params.rut;
-
-    try {
-        const permisos = await Permiso.find({ rut });
-        res.status(200).json(permisos);
-    } catch (error) {
-        res.status(500).json({ message: 'Error al obtener permisos' });
-    }
-});
-
+// Obtener permisos por RUT
+router.get('/listar/:rut', getPermisosPorRut);
 router.post('/agregar/:rut', async (req, res) => {
     const { rut } = req.params;
-    const permisoData = req.body; 
+    const permisoData = req.body; // Datos del permiso
 
     try {
         const permisoAgregado = await agregarPermiso(rut, permisoData);

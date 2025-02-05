@@ -2,6 +2,8 @@ const User = require('../models/User');
 const asyncHandler = require('express-async-handler');
 const bcrypt = require('bcryptjs');
 const Permiso = require('../models/Permisos');
+const Capacitacion = require('../models/Capacitacion');
+
 const getAllUsers = asyncHandler(async (req, res) => {
     const users = await User.find();
 
@@ -36,11 +38,13 @@ const getUserByRut = asyncHandler(async (req, res) => {
             return res.status(404).json({ message: `No se encontró un usuario con el RUT: ${rut}` });
         }
         const permisos = await Permiso.find({ rut });
+        const capacitaciones = await Capacitacion.find({ rut });
 
 
         res.status(200).json({
             user: user,
             permisos: permisos,
+            capacitaciones: capacitaciones,
         });
 
     } catch (error) {

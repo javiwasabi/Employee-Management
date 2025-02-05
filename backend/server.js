@@ -28,6 +28,7 @@ app.use('/auth', require('./routes/authRoutes'));
 app.use('/api', require('./routes/authRoutes')); 
 app.use('/permisos', require('./routes/permisosRoutes'));
 app.use('/permisos', require('./routes/permisosRoutes'));
+app.use('/capacitaciones', require('./routes/capacitacionesRoutes'));
 
 
 

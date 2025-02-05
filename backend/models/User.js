@@ -47,6 +47,10 @@ const userSchema = new mongoose.Schema({
     permisos: [{ 
         type: mongoose.Schema.Types.ObjectId, 
         ref: 'Permiso' 
+    }],
+    capacitaciones: [{ 
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: 'Capacitacion' 
     }]
 }, { timestamps: true });
 
