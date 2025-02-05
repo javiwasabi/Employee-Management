@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import Calendar from "../components/calendar";
-
-const Last: React.FC = () => {
+import Calendar from "../../components/calendar";
+import "../../styles/background.css";
+const CalendarLanding: React.FC = () => {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 
   const handleDayClick = (date: Date) => {
@@ -33,14 +33,8 @@ const Last: React.FC = () => {
   };
 
   return (
-    <div className="relative min-h-screen bg-blue-100 flex items-center justify-center">
-      {/* Fondo */}
-      <img
-        src="fondo.png"
-        alt="Background"
-        className="absolute inset-0 h-full w-full object-cover opacity-80"
-      />
-
+    <div className="relative min-h-screen bg-gradient-to-r from-gray-600 to-white flex items-center justify-center">
+     
       {/* Calendario */}
       <div className="w-[60%] h-[70vh]  p-4 bg-white rounded-lg shadow-lg">
         <Calendar onClickDay={handleDayClick} />
@@ -62,4 +56,4 @@ const Last: React.FC = () => {
   );
 };
 
-export default Last;
+export default CalendarLanding;

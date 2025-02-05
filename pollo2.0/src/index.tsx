@@ -1,42 +1,50 @@
-
 import React, { Suspense } from "react";
 import ReactDOM from "react-dom/client";
-import { BrowserRouter as Router, Route, Routes, Navigate, BrowserRouter } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
 import './index.css';
-import First from "./pages/fPage";
-import LastP from "./pages/disponibilidad";
-import PokemonCard from "./pages/poke";
-import ShoWorkers from "./pages/visualizacion";
-import { Login } from "./pages/login";
+import First from "./pages/Admin/fPage";
+import LastP from "./pages/Admin/disponibilidad";
+import PokemonCard from "./pages/Admin/poke";
+import ShoWorkers from "./pages/Admin/visualizacion";
+import { Login } from "./pages/Autentication/login";
 import ProtectedRoute from "./components/ProtectedRoute"; 
-import AgregarPermiso from "./pages/permisos";
-import AgregarCapacitacion from "./pages/capacitacion";
+import AgregarPermiso from "./pages/Admin/permisos";
+import AgregarCapacitacion from "./pages/Admin/capacitacion";
+import CalendarLanding from "./pages/Employee/disponibilidad";
+import FirstLanding from "./pages/Employee/first";
+import ShowWorkersEmployee from "./pages/Employee/visualizacion";
 document.title = "Pokemón vs Tecnología";
 
-
-const root = ReactDOM.createRoot(
-  document.getElementById("root") as HTMLElement
-);
+const root = ReactDOM.createRoot(document.getElementById("root") as HTMLElement);
 
 root.render(
   <React.StrictMode>
     <Suspense fallback={<div>Loading...</div>}>
+      <Router>
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/unauthorized" element={<h1>Acceso denegado</h1>} />
 
-        <BrowserRouter>
-          <Routes>
-            <Route path="/login" element={<Login />} />
+          <Route element={<ProtectedRoute allowedRoles={["admin"]} />}>
+            <Route path="/" element={<First />} />
+            <Route path="/admin/calendario" element={<LastP />} />
+            <Route path="/admin/newuser" element={<PokemonCard />} />
+            <Route path="/admin/usuarios" element={<ShoWorkers />} />
+            <Route path="/admin/permisos" element={<AgregarPermiso />} />
+            <Route path="/admin/capacitaciones" element={<AgregarCapacitacion />} />
+          </Route>
 
-            <Route element={<ProtectedRoute />}>
-              <Route path="/" element={<First/>} />
-              <Route path="/p" element={<LastP />} />
-              <Route path="/poke" element={<PokemonCard />} />
-              <Route path="/usuarios" element={<ShoWorkers />} />
-              <Route path="/permisos" element={<AgregarPermiso />} />
-              <Route path="/capacitaciones" element={<AgregarCapacitacion />} />
-            </Route>
-          </Routes>
-        </BrowserRouter>
 
+
+          <Route element={<ProtectedRoute allowedRoles={["usuario"]} />}>
+            <Route path="/usuario" element={<FirstLanding />}  />
+            <Route path="/usuario/Calendario" element={<CalendarLanding />} />
+            <Route path="/usuario/Visualizacion" element={<ShowWorkersEmployee />} />
+          </Route>
+
+          <Route path="*" element={<Navigate to="/login" />} />
+        </Routes>
+      </Router>
     </Suspense>
   </React.StrictMode>
 );

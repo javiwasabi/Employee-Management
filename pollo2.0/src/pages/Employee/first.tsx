@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { ButtonStartp, ButtonNext} from "../components/buttons";
-import "../styles/background.css";
+import { ButtonStartp, ButtonNext} from "../../components/buttons";
+import "../../styles/background.css";
 import { useNavigate } from "react-router-dom";
-const First: React.FC = () => {
+const FirstLanding: React.FC = () => {
   const [isRevealed, setIsRevealed] = useState(false);
   const userLanguage = navigator.language || navigator.languages[0];
   const isSpanish = userLanguage.startsWith("es");
@@ -32,36 +32,14 @@ const First: React.FC = () => {
               </p>
             </div>
             <div className="m-2">
-              <ButtonNext id="next-button" onClick={() => navigate("/p")} />
+              <ButtonNext id="next-button" onClick={() => navigate("/usuario/Calendario")} />
             </div>
           </div>
   
-          {/* Card 2 */}
-          <div className="w-60 p-4 bg-white rounded-xl transform transition-all hover:-translate-y-2 duration-300 shadow-lg hover:shadow-2xl">
-            <div className="p-2">
-              <h2 className="font-bold text-lg mb-2">Registrar permiso</h2>
-              <p className="text-sm text-gray-600">
-                Registra directamente un permiso autorizado
-              </p>
-            </div>
-            <div className="m-2">
-              <ButtonNext id="next-button" onClick={() => navigate("/permisos")} />
-            </div>
-          </div>
+     
         </div>
         <div className="flex gap-4">
-        {/* Segunda fila: Card 3 */}
-        <div className="w-60 p-4 bg-white rounded-xl transform transition-all hover:-translate-y-2 duration-300 shadow-lg hover:shadow-2xl">
-          <div className="p-2">
-            <h2 className="font-bold text-lg mb-2">Registrar capacitaciones</h2>
-            <p className="text-sm text-gray-600">
-              Incorpora las capacitaciones con sus respectivos datos.
-            </p>
-          </div>
-          <div className="m-2">
-            <ButtonNext id="next-button" onClick={() => navigate("/capacitaciones")} />
-          </div>
-          </div>
+      
           {/* Segunda fila: Card 3 */}
         <div className="w-60 p-4 bg-white rounded-xl transform transition-all hover:-translate-y-2 duration-300 shadow-lg hover:shadow-2xl">
           <div className="p-2">
@@ -71,7 +49,7 @@ const First: React.FC = () => {
             </p>
           </div>
           <div className="m-2">
-            <ButtonNext id="next-button" onClick={() => navigate("/usuarios")} />
+            <ButtonNext id="next-button" onClick={() => navigate("/usuario/Visualizacion")} />
           </div>
         </div>
         </div>
@@ -81,4 +59,4 @@ const First: React.FC = () => {
   
 };
 
-export default First;
+export default FirstLanding;

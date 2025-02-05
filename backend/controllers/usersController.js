@@ -63,7 +63,11 @@ const createUser = asyncHandler(async (req, res) => {
     }
 
     const userPromises = users.map(async (user) => {
-        const { rut, apellidos, nombres, tipoContrato, cargo, FeriadoLegal = 0, DiasAdministrativos = 0, HorasCompensatorias = 0, email, password } = user;
+        const { 
+            rut, apellidos, nombres, tipoContrato, cargo, 
+            FeriadoLegal = 0, DiasAdministrativos = 0, HorasCompensatorias = 0, 
+            email, password, role = 'usuario'  // Asegúrate de que `role` tenga un valor por defecto
+        } = user;
 
         if (!rut || !email || !password) {
             throw new Error('rut, email, and password are required');
@@ -76,10 +80,11 @@ const createUser = asyncHandler(async (req, res) => {
 
         const hashedPassword = await bcrypt.hash(password, 10);
 
+        // Crear usuario con el role especificado
         const newUser = await User.create({ 
             rut, apellidos, nombres, tipoContrato, cargo, 
             FeriadoLegal, DiasAdministrativos, HorasCompensatorias, 
-            email, password: hashedPassword 
+            email, password: hashedPassword, role 
         });
 
         return newUser;

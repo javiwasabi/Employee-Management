@@ -14,17 +14,14 @@ exports.register = async (req, res) => {
         res.status(500).json({ message: "Error en el registro" });
     }
 };
-
 exports.login = async (req, res) => {
     try {
-        const { rut, password } = req.body;
-
+        const { rut, password, role } = req.body;
 
         const user = await User.findOne({ rut });
         if (!user) {
             return res.status(401).json({ message: "Credenciales inválidas" });
         }
-
 
         const isMatch = await bcrypt.compare(password, user.password);
         console.log("¿Contraseña válida?", isMatch);
@@ -32,18 +29,18 @@ exports.login = async (req, res) => {
             return res.status(401).json({ message: "Credenciales inválidas" });
         }
 
-  
+ 
         const token = jwt.sign(
-            { id: user._id, permissions: user.permissions },  
+            { id: user._id, role: user.role, permissions: user.permissions },  
             secret,
             { expiresIn: "1h" }
         );
 
-        res.json({ token });
 
+        console.log(user.role)
+        res.json({ token, role: user.role }); 
     } catch (error) {
         console.error(error); 
         res.status(500).json({ message: "Error en el inicio de sesión" });
     }
 };
-

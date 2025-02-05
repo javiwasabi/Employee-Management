@@ -12,11 +12,11 @@ const authenticate = async (req, res, next) => {
 
         if (!user) return res.status(403).json({ message: "Usuario no encontrado" });
 
-        const isSupervisor = user.cargo.toLowerCase() === "supervisor";
+        const isSupervisor = user.role === "supervisor"; 
         req.user = {
             id: user._id,
-            cargo: user.cargo,
-            permissions: isSupervisor ? ["ver", "crear", "eliminar", "editar"] : user.permissions
+            role: user.role, 
+            permissions: isSupervisor ? ["ver", "crear", "eliminar", "editar"] : user.permissions,
         };
 
         next();

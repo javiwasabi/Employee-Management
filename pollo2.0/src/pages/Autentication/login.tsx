@@ -15,14 +15,29 @@ export const Login = () => {
     e.preventDefault();
     setError(""); 
 
+    console.log("Datos enviados:", formData);
+
     try {
-      const res = await axios.post("http://localhost:3001/auth/login", formData);
-      localStorage.setItem("token", res.data.token);
-      navigate("/");
+        const res = await axios.post("http://localhost:3001/auth/login", formData);
+
+        console.log("Respuesta del backend:", res.data);
+        console.log("Está el rol?", res.data.role);
+
+        localStorage.setItem("token", res.data.token);
+        localStorage.setItem("role", res.data.role);  
+        if (res.data.role === "admin") {
+          navigate("/"); 
+        } else if (res.data.role === "usuario") {
+          navigate("/usuario"); 
+        } else {
+          setError("No tienes acceso autorizado");
+        }
+
     } catch (error) {
-      setError("Rut o contraseña incorrectos");
+        console.error("Error en la autenticación:", error);
+        setError("Rut o contraseña incorrectos");
     }
-  };
+};
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-r from-gray-600 to-white">

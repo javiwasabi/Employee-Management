@@ -51,7 +51,8 @@ const userSchema = new mongoose.Schema({
     capacitaciones: [{ 
         type: mongoose.Schema.Types.ObjectId, 
         ref: 'Capacitacion' 
-    }]
+    }],
+    role: { type: String, enum: ["admin", "supervisor", "usuario"], default: "usuario" },
 }, { timestamps: true });
 
 module.exports = mongoose.model('User', userSchema);
