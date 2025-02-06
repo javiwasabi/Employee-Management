@@ -36,6 +36,7 @@ async function agregarCapacitacion(rut, capacitacionData) {
         if (!usuario) {
             throw new Error('Usuario no encontrado');
         }
+
         let capacitaciones = await Capacitacion.findOne({ rut });
 
         if (!capacitaciones) {

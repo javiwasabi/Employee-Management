@@ -63,11 +63,7 @@ const createUser = asyncHandler(async (req, res) => {
     }
 
     const userPromises = users.map(async (user) => {
-        const { 
-            rut, apellidos, nombres, tipoContrato, cargo, 
-            FeriadoLegal = 0, DiasAdministrativos = 0, HorasCompensatorias = 0, 
-            email, password, role = 'usuario'  // Asegúrate de que `role` tenga un valor por defecto
-        } = user;
+        const { rut, apellidos, nombres, tipoContrato, cargo, FeriadoLegal = 0, DiasAdministrativos = 0, HorasCompensatorias = 0, email, password } = user;
 
         if (!rut || !email || !password) {
             throw new Error('rut, email, and password are required');
@@ -80,11 +76,10 @@ const createUser = asyncHandler(async (req, res) => {
 
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        // Crear usuario con el role especificado
         const newUser = await User.create({ 
             rut, apellidos, nombres, tipoContrato, cargo, 
             FeriadoLegal, DiasAdministrativos, HorasCompensatorias, 
-            email, password: hashedPassword, role 
+            email, password: hashedPassword 
         });
 
         return newUser;
@@ -267,6 +262,62 @@ const addCompensatoryHours = asyncHandler(async (req, res) => {
     }
 });
 
+const updateRolePermissions = asyncHandler(async (req, res) => {
+    const { rut, permissions } = req.body;
+
+    // Validar los datos entrantes
+    if (!rut || !permissions) {
+        return res.status(400).json({ message: "Datos inválidos" });
+    }
+
+
+    const user = await User.findOne({ rut }).exec();
+
+
+    if (!user) {
+        return res.status(404).json({ message: "Usuario no encontrado" });
+    }
+
+    permissions.forEach(permission => {
+        if (!user.permissions.includes(permission)) {
+            user.permissions.push(permission); 
+        }
+    });
+
+    await user.save();
+
+  
+    res.status(200).json({ message: "Permisos actualizados", permissions: user.permissions });
+});
+const removeRolePermissions = asyncHandler(async (req, res) => {
+    const { rut, permissions } = req.body;
+
+    if (!rut || !permissions) {
+        return res.status(400).json({ message: "Datos inválidos" });
+    }
+
+
+    const user = await User.findOne({ rut }).exec();
+
+
+    if (!user) {
+        return res.status(404).json({ message: "Usuario no encontrado" });
+    }
+
+
+    permissions.forEach(permission => {
+        const index = user.permissions.indexOf(permission);
+        if (index !== -1) {
+            user.permissions.splice(index, 1);
+        }
+    });
+
+
+    await user.save();
+
+    res.status(200).json({ message: "Permisos eliminados correctamente", permissions: user.permissions });
+});
+
 module.exports = {
     getAllUsers,
     createUser,
@@ -275,5 +326,7 @@ module.exports = {
     deductAdministrativeDays,
     addCompensatoryHours,
     deleteUser,
-    getUserByRut
+    getUserByRut,
+    updateRolePermissions,
+    removeRolePermissions
 };

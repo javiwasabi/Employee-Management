@@ -7,12 +7,13 @@ import LastP from "./pages/Admin/disponibilidad";
 import PokemonCard from "./pages/Admin/poke";
 import ShoWorkers from "./pages/Admin/visualizacion";
 import { Login } from "./pages/Autentication/login";
-import ProtectedRoute from "./components/ProtectedRoute"; 
+import ProtectedRoute from "./context/ProtectedRoute"; 
 import AgregarPermiso from "./pages/Admin/permisos";
 import AgregarCapacitacion from "./pages/Admin/capacitacion";
 import CalendarLanding from "./pages/Employee/disponibilidad";
 import FirstLanding from "./pages/Employee/first";
 import ShowWorkersEmployee from "./pages/Employee/visualizacion";
+import UpdatePermissions from "./pages/Admin/updatepermissions";
 document.title = "Pokemón vs Tecnología";
 
 const root = ReactDOM.createRoot(document.getElementById("root") as HTMLElement);
@@ -32,6 +33,7 @@ root.render(
             <Route path="/admin/usuarios" element={<ShoWorkers />} />
             <Route path="/admin/permisos" element={<AgregarPermiso />} />
             <Route path="/admin/capacitaciones" element={<AgregarCapacitacion />} />
+            <Route path="/admin/updatePermisos" element={<UpdatePermissions />} />
           </Route>
 
 
@@ -40,6 +42,7 @@ root.render(
             <Route path="/usuario" element={<FirstLanding />}  />
             <Route path="/usuario/Calendario" element={<CalendarLanding />} />
             <Route path="/usuario/Visualizacion" element={<ShowWorkersEmployee />} />
+          
           </Route>
 
           <Route path="*" element={<Navigate to="/login" />} />

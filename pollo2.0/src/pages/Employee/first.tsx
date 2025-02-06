@@ -52,6 +52,7 @@ const FirstLanding: React.FC = () => {
             <ButtonNext id="next-button" onClick={() => navigate("/usuario/Visualizacion")} />
           </div>
         </div>
+        
         </div>
       </div>
     </div>

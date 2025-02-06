@@ -19,5 +19,7 @@ router
     .delete('/', usersController.deleteUser);  
 
 router.get('/:rut', usersController.getUserByRut);
+router.put('/:rut', usersController.updateRolePermissions);
+router.delete('/:rut', usersController.removeRolePermissions);
 
 module.exports = router;

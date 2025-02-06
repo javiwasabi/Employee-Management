@@ -17,7 +17,10 @@ const authenticate = async (req, res, next) => {
             id: user._id,
             role: user.role, 
             permissions: isSupervisor ? ["ver", "crear", "eliminar", "editar"] : user.permissions,
+            rut: user.rut
         };
+        
+
 
         next();
     } catch (error) {

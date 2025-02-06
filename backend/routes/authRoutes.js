@@ -12,6 +12,7 @@ router.get('/verify-token', authenticate, (req, res) => {
         valid: true,
         role: req.user.role, 
         permissions: req.user.permissions,
+        rut: req.user.rut
     });
 });
 

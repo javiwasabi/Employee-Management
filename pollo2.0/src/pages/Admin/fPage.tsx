@@ -73,7 +73,21 @@ const First: React.FC = () => {
           <div className="m-2">
             <ButtonNext id="next-button" onClick={() => navigate("/admin/usuarios")} />
           </div>
+
         </div>
+        <div className="w-60 p-4 bg-white rounded-xl transform transition-all hover:-translate-y-2 duration-300 shadow-lg hover:shadow-2xl">
+          <div className="p-2">
+            <h2 className="font-bold text-lg mb-2">Modificar permisos</h2>
+            <p className="text-sm text-gray-600">
+              modifica los permisos de los usuarios.
+            </p>
+          </div>
+          <div className="m-2">
+            <ButtonNext id="next-button" onClick={() => navigate("/admin/updatePermisos")} />
+          </div>
+
+        </div>
+        
         </div>
       </div>
     </div>

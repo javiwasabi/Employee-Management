@@ -2,9 +2,6 @@ const express = require('express');
 const router = express.Router();
 
 const { agregarCapacitacion, getCapacitaciones, getCapacitacionPorRut } = require('../controllers/capacitacionController');
-
-
-
 router.get('/listar/capacitaciones', getCapacitaciones);
 
 router.get('/listar/:rut', getCapacitacionPorRut);

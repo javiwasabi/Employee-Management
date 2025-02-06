@@ -24,9 +24,12 @@ export const Login = () => {
         console.log("Está el rol?", res.data.role);
 
         localStorage.setItem("token", res.data.token);
-        localStorage.setItem("role", res.data.role);  
+        localStorage.setItem("role", res.data.role);
+        localStorage.setItem("rut", res.data.rut) 
+      
         if (res.data.role === "admin") {
           navigate("/"); 
+           
         } else if (res.data.role === "usuario") {
           navigate("/usuario"); 
         } else {

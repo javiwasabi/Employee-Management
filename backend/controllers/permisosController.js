@@ -1,13 +1,28 @@
 const Permiso = require('../models/Permisos');
 const User = require('../models/User');
-async function agregarPermiso(rut, permisoData) {
+
+async function agregarPermiso(permisoData) {
     try {
+        const { rut, rutadmin, estado, tipoPermiso, fechaSolicitud, fechaInicio, fechaTermino, nDias } = permisoData;
 
-        const usuario = await User.findOne({ rut });
-
-        if (!usuario) {
-            throw new Error('Usuario no encontrado');
+        const adminUser = await User.findOne({ rut: rutadmin });
+        if (!adminUser) {
+            return res.status(404).json({ message: `Usuario administrador con RUT: ${rutadmin} no encontrado` });
         }
+
+
+        if (!adminUser.permissions.includes("crear")) {
+            return res.status(403).json({ message: 'Permisos no autorizados' });
+        }
+
+        const targetUser = await User.findOne({ rut });
+        if (!targetUser) {
+            return res.status(404).json({ message: `No se encontró un usuario con el RUT: ${rut}` });
+        }
+
+        
+          
+          
         let permisos = await Permiso.findOne({ rut });
 
         if (!permisos) {

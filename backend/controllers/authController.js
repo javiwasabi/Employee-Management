@@ -31,14 +31,14 @@ exports.login = async (req, res) => {
 
  
         const token = jwt.sign(
-            { id: user._id, role: user.role, permissions: user.permissions },  
+            { id: user._id, role: user.role, permissions: user.permissions, rut: user.rut },  
             secret,
             { expiresIn: "1h" }
         );
 
 
         console.log(user.role)
-        res.json({ token, role: user.role }); 
+        res.json({ token, role: user.role, rut: user.rut}); 
     } catch (error) {
         console.error(error); 
         res.status(500).json({ message: "Error en el inicio de sesión" });

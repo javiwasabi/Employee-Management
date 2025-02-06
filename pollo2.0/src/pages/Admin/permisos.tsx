@@ -10,25 +10,44 @@ const AgregarPermiso = () => {
     const [nDias, setNDias] = useState(0);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
+    const rutadmin = localStorage.getItem("rut");
+
+   
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
         setError("");
+    
 
-        const permisoData = { estado, tipoPermiso, fechaSolicitud, fechaInicio, fechaTermino, nDias };
+        const rutadmin = localStorage.getItem("rut");
+        console.log(rut)
+    
 
+        const permisoData = { 
+            rut, 
+            rutadmin, 
+            estado, 
+            tipoPermiso, 
+            fechaSolicitud, 
+            fechaInicio, 
+            fechaTermino, 
+            nDias 
+        };
+    
+        console.log(rutadmin);
+    
         try {
             const response = await fetch(`http://localhost:3001/permisos/agregar/${rut}`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(permisoData),
             });
-
+    
             if (!response.ok) {
-                throw new Error("Error al agregar el permiso");
+                throw new Error("Error al agregar el permiso. Permisos no autorizados");
             }
-
+    
             alert("Permiso agregado correctamente");
             setRut("");
             setEstado("");
@@ -43,6 +62,7 @@ const AgregarPermiso = () => {
             setLoading(false);
         }
     };
+    
 
     return (
         <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-gray-600 to-white">
