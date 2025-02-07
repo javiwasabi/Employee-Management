@@ -2,6 +2,7 @@ import React, { Suspense } from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
 import './index.css';
+import "./styles/background.css";
 import First from "./pages/Admin/fPage";
 import LastP from "./pages/Admin/disponibilidad";
 import PokemonCard from "./pages/Admin/poke";

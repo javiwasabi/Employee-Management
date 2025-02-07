@@ -23,11 +23,11 @@ const userSchema = new mongoose.Schema({
     },
     feriadoLegal: {
         type: Number,
-        default: 0
+
     },
     diasAdministrativos: {
         type: Number,
-        default: 0
+   
     },
     horasCompensatorias: {
         type: Number,

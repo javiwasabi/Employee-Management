@@ -59,11 +59,11 @@ const createUser = asyncHandler(async (req, res) => {
     const users = req.body; 
 
     if (!Array.isArray(users) || users.length === 0) {
-        return res.status(400).json({ message: 'Please provide an array of users' });
+        return res.status(400).json({ message: 'please provide an array of users' });
     }
 
     const userPromises = users.map(async (user) => {
-        const { rut, apellidos, nombres, tipoContrato, cargo, FeriadoLegal = 0, DiasAdministrativos = 0, HorasCompensatorias = 0, email, password } = user;
+        const { rut, apellidos, nombres, tipoContrato, cargo, feriadoLegal, diasAdministrativos, horasCompensatorias = 0, email, password } = user;
 
         if (!rut || !email || !password) {
             throw new Error('rut, email, and password are required');
@@ -78,7 +78,7 @@ const createUser = asyncHandler(async (req, res) => {
 
         const newUser = await User.create({ 
             rut, apellidos, nombres, tipoContrato, cargo, 
-            FeriadoLegal, DiasAdministrativos, HorasCompensatorias, 
+            feriadoLegal, diasAdministrativos, horasCompensatorias, 
             email, password: hashedPassword 
         });
 
@@ -103,9 +103,10 @@ const createUser = asyncHandler(async (req, res) => {
         });
 
     } catch (error) {
-        res.status(500).json({ message: 'Error processing users', error: error.message });
+        res.status(500).json({ message: 'error processing users', error: error.message });
     }
 });
+
 
 // @desc Delete a user by rut
 // @route DELETE /users/:rut
@@ -187,9 +188,11 @@ const deductHoliday = asyncHandler(async (req, res) => {
         if (user.FeriadoLegal < daysToDeduct) {
             return res.status(400).json({ message: 'Insufficient holiday days' });
         }
+        console.log(user.feriadoLegal)
 
-        user.FeriadoLegal -= daysToDeduct;
+        user.feriadoLegal -= daysToDeduct;
         const updatedUser = await user.save();
+        console.log(user.feriadoLegal)
 
         res.status(200).json({
             message: `Holiday days deducted successfully`,
@@ -220,8 +223,10 @@ const deductAdministrativeDays = asyncHandler(async (req, res) => {
         if (user.DiasAdministrativos < daysToDeduct) {
             return res.status(400).json({ message: 'Insufficient administrative days' });
         }
+        console.log(daysToDeduct)
 
-        user.DiasAdministrativos -= daysToDeduct;
+        user.diasAdministrativos -= daysToDeduct;
+        console.log(user.diasAdministrativos)
         const updatedUser = await user.save();
 
         res.status(200).json({
@@ -249,9 +254,11 @@ const addCompensatoryHours = asyncHandler(async (req, res) => {
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
         }
+        console.log(user.horasCompensatorias)
 
-        user.HorasCompensatorias += hoursToAdd;
+        user.horasCompensatorias += hoursToAdd;
         const updatedUser = await user.save();
+        console.log(user.horasCompensatorias)
 
         res.status(200).json({
             message: `Compensatory hours added successfully`,

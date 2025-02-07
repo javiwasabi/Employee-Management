@@ -41,65 +41,67 @@ const AgregarCapacitacion = () => {
     };
 
     return (
-        <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-gray-600 to-white">
-            <div className="max-w-lg w-full bg-white p-8 rounded-lg shadow-lg border border-gray-300">
-                <h2 className="text-2xl font-semibold mb-6 text-center text-gray-800">Agregar Capacitación</h2>
-                {error && <p className="text-red-600 text-center mb-4">{error}</p>}
-                <form onSubmit={handleSubmit} className="space-y-6">
+        <div className="flex items-center justify-center min-h-screen bg-gradient-to-r bg-gradient-to-r from-black via-gray-600 to-blue-200">
+            <div className="w-full max-w-md h-[60vh] bg-white p-6 rounded-xl shadow-lg border border-gray-300 flex flex-col justify-center">
+                <h2 className="text-xl font-semibold mb-4 text-center text-gray-800">Agregar Capacitación</h2>
+                {error && <p className="text-red-600 text-center mb-3 text-sm">{error}</p>}
+                <form onSubmit={handleSubmit} className="space-y-4">
                     <div>
+                        <label className="block text-gray-700 text-sm mb-1">RUT del usuario</label>
                         <input
                             type="text"
-                            placeholder="RUT del usuario"
                             value={rut}
                             onChange={(e) => setRut(e.target.value)}
                             required
-                            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200"
+                            className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-400 text-sm"
                         />
                     </div>
                     <div>
+                        <label className="block text-gray-700 text-sm mb-1">Nombre de la Capacitación</label>
                         <input
                             type="text"
-                            placeholder="Nombre de la Capacitación"
                             value={nombreCapacitacion}
                             onChange={(e) => setNombreCapacitacion(e.target.value)}
                             required
-                            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200"
+                            className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-400 text-sm"
                         />
                     </div>
-                    <div>
-                        <input
-                            type="number"
-                            placeholder="Horas Realizadas"
-                            value={horasRealizadas}
-                            onChange={(e) => setHorasRealizadas(Number(e.target.value))}
-                            required
-                            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200"
-                        />
+                    <div className="grid grid-cols-2 gap-2">
+                        <div>
+                            <label className="block text-gray-700 text-sm mb-1">Horas Realizadas</label>
+                            <input
+                                type="number"
+                                value={horasRealizadas}
+                                onChange={(e) => setHorasRealizadas(Number(e.target.value))}
+                                required
+                                className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-400 text-sm"
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-gray-700 text-sm mb-1">Nota</label>
+                            <input
+                                type="number"
+                                value={nota}
+                                onChange={(e) => setNota(Number(e.target.value))}
+                                required
+                                className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-400 text-sm"
+                            />
+                        </div>
                     </div>
                     <div>
-                        <input
-                            type="number"
-                            placeholder="Nota"
-                            value={nota}
-                            onChange={(e) => setNota(Number(e.target.value))}
-                            required
-                            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200"
-                        />
-                    </div>
-                    <div>
+                        <label className="block text-gray-700 text-sm mb-1">Peso Relativo</label>
                         <input
                             type="text"
-                            placeholder="Peso Relativo"
                             value={pesoRelativo}
                             onChange={(e) => setPesoRelativo(e.target.value)}
                             required
-                            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200"
+                            className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-400 text-sm"
                         />
                     </div>
                     <div>
                         <button
                             type="submit"
-                            className={`w-full py-3 text-white font-semibold rounded-lg ${
+                            className={`w-full py-2 text-white text-sm font-semibold rounded-md ${
                                 loading ? "bg-gray-400 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700"
                             } transition duration-200`}
                             disabled={loading}
@@ -111,6 +113,7 @@ const AgregarCapacitacion = () => {
             </div>
         </div>
     );
+    
 };
 
 export default AgregarCapacitacion;
