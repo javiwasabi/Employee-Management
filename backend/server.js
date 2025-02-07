@@ -14,13 +14,12 @@ const PORT = process.env.PORT || 3001;
 console.log(process.env.NODE_ENV);
 
 connectDB();
-
-app.use(express.json());
-
-app.use(logger);
-app.use(cors(corsOptions));
+app.use(cors(corsOptions));  // 🔹 Debe ir primero
 app.use(express.json());
 app.use(cookieParser());
+
+
+app.use(logger);
 
 app.use('/', express.static(path.join(__dirname, 'public')));
 
