@@ -16,11 +16,7 @@ export const Login = () => {
     setError(""); 
 
     try {
-      const res = await axios.post(
-        "https://gallant-stillness-production.up.railway.app/auth/login",
-        formData,
-        { withCredentials: true } // 🔹 Necesario si usas JWT o cookies
-      );
+      const res = await axios.post("http://localhost:3001/auth/login", formData);
       localStorage.setItem("token", res.data.token);
       localStorage.setItem("role", res.data.role);
       localStorage.setItem("rut", res.data.rut);

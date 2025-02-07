@@ -17,7 +17,7 @@ const AgregarCapacitacion = () => {
         const capacitacionData = { nombreCapacitacion, horasRealizadas, nota, PesoRelativo: pesoRelativo };
 
         try {
-            const response = await fetch(`gallant-stillness-production.up.railway.app/capacitaciones/agregar/${rut}`, {
+            const response = await fetch(`http://localhost:3001/capacitaciones/agregar/${rut}`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(capacitacionData),
