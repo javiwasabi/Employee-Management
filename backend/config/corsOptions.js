@@ -1,14 +1,13 @@
 
 const corsOptions = {
-    origin: (origin, callback) => {
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
-    credentials: true, // 🔹 IMPORTANTE si usas cookies o headers con autenticación
+    origin: [
+        "http://localhost:3000",
+        "https://employee-management-brown-five.vercel.app",
+        "https://gallant-stillness-production.up.railway.app"
+    ],
+    methods: "GET, POST, PUT, DELETE, OPTIONS",
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true, // 🔹 Importante si usas cookies o autenticación
     optionsSuccessStatus: 200
-  };
-  
+};
   module.exports = corsOptions;
