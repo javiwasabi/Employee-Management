@@ -15,7 +15,7 @@ import CalendarLanding from "./pages/Employee/disponibilidad";
 import FirstLanding from "./pages/Employee/first";
 import ShowWorkersEmployee from "./pages/Employee/visualizacion";
 import UpdatePermissions from "./pages/Admin/updatepermissions";
-document.title = "Pokemón vs Tecnología";
+document.title = "Permisos y capacitaciones";
 
 const root = ReactDOM.createRoot(document.getElementById("root") as HTMLElement);
 

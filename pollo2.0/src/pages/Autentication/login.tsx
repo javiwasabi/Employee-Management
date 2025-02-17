@@ -16,7 +16,10 @@ export const Login = () => {
     setError(""); 
 
     try {
-      const res = await axios.post("http://localhost:3001/auth/login", formData);
+      const API_URL = process.env.REACT_APP_API_URL || "http://localhost:3001";
+      const res = await axios.post(`${API_URL}/auth/login`, formData);
+      
+      
       localStorage.setItem("token", res.data.token);
       localStorage.setItem("role", res.data.role);
       localStorage.setItem("rut", res.data.rut);

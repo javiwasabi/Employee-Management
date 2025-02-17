@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react"; 
 import axios from "axios"; 
-
+const API_URL = process.env.REACT_APP_API_URL || "http://localhost:3001";
 const ShowWorkersEmployee: React.FC = () => {
   const [searchRut, setSearchRut] = useState(""); 
   const [selectedWorker, setSelectedWorker] = useState<any | null>(null); 
@@ -16,7 +16,7 @@ const ShowWorkersEmployee: React.FC = () => {
     }
 
     try {
-      const response = await axios.get(`http://localhost:3001/users/${rut}`);
+      const response = await axios.get(`${API_URL}/users/${rut}`);
       console.log("Datos del trabajador:", response.data); 
       setSelectedWorker(response.data);
     } catch (error) {
@@ -32,7 +32,7 @@ const ShowWorkersEmployee: React.FC = () => {
     }
 
     try {
-      const response = await axios.get(`http://localhost:3001/permisos/listar/${rut}`);
+      const response = await axios.get(`${API_URL}/permisos/listar/${rut}`);
       console.log("Permisos del trabajador:", response.data);
       setPermissions(response.data);
     } catch (error) {
@@ -41,6 +41,7 @@ const ShowWorkersEmployee: React.FC = () => {
     }
   };
 
+
   const fetchtrainingsByRut = async (rut: string) => {
     if (rut.trim().length === 0) {
       setTraining([]);
@@ -48,7 +49,7 @@ const ShowWorkersEmployee: React.FC = () => {
     }
 
     try {
-      const response = await axios.get(`http://localhost:3001/capacitaciones/listar/${rut}`);
+      const response = await axios.get(`${API_URL}/capacitaciones/listar/${rut}`);
       console.log("Capacitaciones del trabajador:", response.data);
       setTraining(response.data.capacitaciones); 
     } catch (error) {

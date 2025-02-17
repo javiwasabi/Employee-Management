@@ -8,6 +8,8 @@ const AgregarCapacitacion = () => {
     const [pesoRelativo, setPesoRelativo] = useState("");
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
+    const API_URL = process.env.REACT_APP_API_URL || "http://localhost:3001";
+ 
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -17,11 +19,11 @@ const AgregarCapacitacion = () => {
         const capacitacionData = { nombreCapacitacion, horasRealizadas, nota, PesoRelativo: pesoRelativo };
 
         try {
-            const response = await fetch(`http://localhost:3001/capacitaciones/agregar/${rut}`, {
+            const response = await fetch(`${API_URL}/capacitaciones/agregar/${rut}`, { 
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(capacitacionData),
-            });
+              });
 
             if (!response.ok) {
                 throw new Error("Error al agregar la capacitación");

@@ -1,5 +1,5 @@
 import { useState } from "react";
-
+const API_URL = process.env.REACT_APP_API_URL || "http://localhost:3001";
 const AgregarPermiso = () => {
     const [rut, setRut] = useState("");
     const [estado, setEstado] = useState("");
@@ -33,7 +33,7 @@ const AgregarPermiso = () => {
         };
     
         try {
-            const response = await fetch(`http://localhost:3001/permisos/agregar/${rut}`, {
+            const response = await fetch(`${API_URL}/permisos/agregar/${rut}`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(permisoData),

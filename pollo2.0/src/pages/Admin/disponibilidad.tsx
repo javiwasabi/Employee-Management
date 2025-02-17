@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Calendar from "../../components/calendar";
 import axios from "axios";
-
+const API_URL = process.env.REACT_APP_API_URL || "http://localhost:3001";
 interface Permiso {
   rut: string;
   tipoPermiso: string;
@@ -36,8 +36,8 @@ const Last: React.FC = () => {
 
   const fetchData = async () => {
     try {
-      const resPermisos = await axios.get(`http://localhost:3001/permisos/listar`);
-      const resUsuarios = await axios.get(`http://localhost:3001/users`);
+      const resPermisos = await axios.get(`${API_URL}/permisos/listar`);
+      const resUsuarios = await axios.get(`${API_URL}/users`);
       console.log(resUsuarios.data.users)
       
       const permisosFiltrados = resPermisos.data.flatMap((p: any) =>
