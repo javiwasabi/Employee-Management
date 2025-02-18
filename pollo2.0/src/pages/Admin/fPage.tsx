@@ -1,98 +1,79 @@
 import React, { useState } from "react";
-import { ButtonStartp, ButtonNext} from "../../components/buttons";
+import { ButtonNext } from "../../components/buttons";
 import "../../styles/background.css";
 import { useNavigate } from "react-router-dom";
+
 const First: React.FC = () => {
   const [isRevealed, setIsRevealed] = useState(false);
-  const userLanguage = navigator.language || navigator.languages[0];
-  const isSpanish = userLanguage.startsWith("es");
   const navigate = useNavigate();
 
-  const handleClick = () => {
-    setIsRevealed(!isRevealed);
-  };
-
   return (
-    <div className="relative bg-blue min-h-screen flex items-center justify-center overflow-hidden">
+    <div className="relative bg-blue min-h-screen flex items-center justify-center overflow-hidden p-4">
+      {/* Fondo */}
       <img
         src="fondo.png"
         alt="Background"
         className="absolute inset-0 h-full w-full object-cover opacity-80"
       />
-  
-      <div className="flex flex-col items-center gap-6">
-        {/* Primera fila: Cards 1 y 2 */}
-        <div className="flex gap-4">
-          {/* Card 1 */}
-          <div className="w-60 p-4 bg-white rounded-xl transform transition-all hover:-translate-y-2 duration-300 shadow-lg hover:shadow-2xl">
-            <div className="p-2">
-              <h2 className="font-bold text-lg mb-2">Revisar disponibilidad</h2>
-              <p className="text-sm text-gray-600">
-                Revisa los días que se encuentran con permisos
-              </p>
-            </div>
-            <div className="m-2">
-              <ButtonNext id="next-button" onClick={() => navigate("/admin/calendario")} />
-            </div>
-          </div>
-  
-          {/* Card 2 */}
-          <div className="w-60 p-4 bg-white rounded-xl transform transition-all hover:-translate-y-2 duration-300 shadow-lg hover:shadow-2xl">
-            <div className="p-2">
-              <h2 className="font-bold text-lg mb-2">Registrar permiso</h2>
-              <p className="text-sm text-gray-600">
-                Registra directamente un permiso autorizado
-              </p>
-            </div>
-            <div className="m-2">
-              <ButtonNext id="next-button" onClick={() => navigate("/admin/permisos")} />
-            </div>
-          </div>
-        </div>
-        <div className="flex gap-4">
-        {/* Segunda fila: Card 3 */}
-        <div className="w-60 p-4 bg-white rounded-xl transform transition-all hover:-translate-y-2 duration-300 shadow-lg hover:shadow-2xl">
-          <div className="p-2">
-            <h2 className="font-bold text-lg mb-2">Registrar capacitaciones</h2>
-            <p className="text-sm text-gray-600">
-              Incorpora las capacitaciones con sus respectivos datos.
-            </p>
-          </div>
-          <div className="m-2">
-            <ButtonNext id="next-button" onClick={() => navigate("/admin/capacitaciones")} />
-          </div>
-          </div>
-          {/* Segunda fila: Card 3 */}
-        <div className="w-60 p-4 bg-white rounded-xl transform transition-all hover:-translate-y-2 duration-300 shadow-lg hover:shadow-2xl">
-          <div className="p-2">
-            <h2 className="font-bold text-lg mb-2">Visualizar funcionarios</h2>
-            <p className="text-sm text-gray-600">
-              Revisa cada ficha de los funcionarios.
-            </p>
-          </div>
-          <div className="m-2">
-            <ButtonNext id="next-button" onClick={() => navigate("/admin/usuarios")} />
-          </div>
 
-        </div>
-        <div className="w-60 p-4 bg-white rounded-xl transform transition-all hover:-translate-y-2 duration-300 shadow-lg hover:shadow-2xl">
-          <div className="p-2">
-            <h2 className="font-bold text-lg mb-2">Modificar permisos</h2>
-            <p className="text-sm text-gray-600">
-              modifica los permisos de los usuarios.
-            </p>
-          </div>
-          <div className="m-2">
-            <ButtonNext id="next-button" onClick={() => navigate("/admin/updatePermisos")} />
-          </div>
+      {/* Contenedor de las tarjetas */}
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 z-10">
+        {/* Tarjeta 1 */}
+        <Card
+          title="Revisar disponibilidad"
+          description="Revisa los días que se encuentran con permisos"
+          onClick={() => navigate("/admin/calendario")}
+        />
 
-        </div>
-        
-        </div>
+        {/* Tarjeta 2 */}
+        <Card
+          title="Registrar permiso"
+          description="Registra directamente un permiso autorizado"
+          onClick={() => navigate("/admin/permisos")}
+        />
+
+        {/* Tarjeta 3 */}
+        <Card
+          title="Registrar capacitaciones"
+          description="Incorpora las capacitaciones con sus respectivos datos."
+          onClick={() => navigate("/admin/capacitaciones")}
+        />
+
+        {/* Tarjeta 4 */}
+        <Card
+          title="Visualizar funcionarios"
+          description="Revisa cada ficha de los funcionarios."
+          onClick={() => navigate("/admin/usuarios")}
+        />
+
+        {/* Tarjeta 5 */}
+        <Card
+          title="Modificar permisos"
+          description="Modifica los permisos de los usuarios."
+          onClick={() => navigate("/admin/updatePermisos")}
+        />
       </div>
     </div>
   );
-  
+};
+
+// Componente reutilizable para tarjetas
+const Card: React.FC<{ title: string; description: string; onClick: () => void }> = ({
+  title,
+  description,
+  onClick,
+}) => {
+  return (
+    <div className="w-full md:w-60 p-4 bg-white rounded-xl transform transition-all hover:-translate-y-2 duration-300 shadow-lg hover:shadow-2xl">
+      <div className="p-2">
+        <h2 className="font-bold text-lg mb-2">{title}</h2>
+        <p className="text-sm text-gray-600">{description}</p>
+      </div>
+      <div className="m-2">
+        <ButtonNext id="next-button" onClick={onClick} />
+      </div>
+    </div>
+  );
 };
 
 export default First;
