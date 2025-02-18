@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Navigate, Outlet } from "react-router-dom";
 
-const BACKEND_URL = "http://localhost:3001";
+const BACKEND_URL = process.env.REACT_APP_API_URL || "http://localhost:3001";
+
 
 interface ProtectedRouteProps {
   allowedRoles: string[];
