@@ -1,11 +1,11 @@
 const express = require('express');
 const router = express.Router();
-const { agregarPermiso } = require('../controllers/permisosController');
+const { agregarPermiso, eliminarPermiso } = require('../controllers/permisosController');
 const { getPermisos, getPermisosPorRut } = require('../controllers/permisosController');
 
 router.get('/listar', getPermisos);
 router.get('/listar/:rut', getPermisosPorRut);
-
+router.patch('/eliminar-permiso', eliminarPermiso);
 router.post('/agregar/:rut', async (req, res) => {
 
     const permisoData = req.body; 

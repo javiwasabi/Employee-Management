@@ -3,6 +3,30 @@ const asyncHandler = require('express-async-handler');
 const bcrypt = require('bcryptjs');
 const Permiso = require('../models/Permisos');
 const Capacitacion = require('../models/Capacitacion');
+const getUsersByInitial = asyncHandler(async (req, res) => {
+    const { letter } = req.query; 
+
+    if (!letter || letter.length !== 1 || !/^[A-Za-z]$/.test(letter)) {
+        return res.status(400).json({ message: 'Debe proporcionar una única letra válida' });
+    }
+
+    try {
+        const regex = new RegExp(`^${letter}`, 'i'); // Expresión regular para búsqueda insensible a mayúsculas
+        const users = await User.find({ nombres: regex }).sort({ apellidos: 1 }).select("-password");
+
+        if (!users.length) {
+            return res.status(404).json({ message: 'No se encontraron usuarios' });
+        }
+
+        res.json({
+            totalUsers: users.length,
+            users
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Error en el servidor" });
+    }
+});
 
 const getAllUsers = asyncHandler(async (req, res) => {
     const users = await User.find();
@@ -27,6 +51,23 @@ const getAllUsers = asyncHandler(async (req, res) => {
     });
 });
 
+const switchAllUsers = asyncHandler(async (req, res) => {
+    const users = await User.find();
+
+    if (!users?.length) {
+        return res.status(400).json({ message: 'No users found' });
+    }
+
+    // Iterar sobre cada usuario y actualizar sus valores
+    for (const user of users) {
+        user.feriadoLegal = 15;
+        user.diasAdministrativos = 6;
+     
+        await user.save(); // Guardar cambios en la base de datos
+    }
+
+    res.status(200).json({ message: 'Todos los usuarios han sido actualizados' });
+});
 
 const getUserByRut = asyncHandler(async (req, res) => {
     const { rut } = req.params;
@@ -335,5 +376,7 @@ module.exports = {
     deleteUser,
     getUserByRut,
     updateRolePermissions,
-    removeRolePermissions
+    removeRolePermissions,
+    switchAllUsers,
+    getUsersByInitial
 };

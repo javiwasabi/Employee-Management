@@ -43,25 +43,7 @@ const AgregarPermiso = () => {
                 throw new Error("Error al agregar el permiso. Permisos no autorizados");
             }
     
-            if (tipoPermiso === "Día Administrativo") {
-                await fetch("http://localhost:3001/users/deduct-administrative-days", {
-                    method: "PATCH",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ rut, daysToDeduct: nDias }),
-                });
-            } else if (tipoPermiso === "Feriado Legal") {
-                await fetch("http://localhost:3001/users/deduct-holiday", {
-                    method: "PATCH",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ rut, daysToDeduct: nDias }),
-                });
-            } else if (tipoPermiso === "Horas Compensatorias") {
-                await fetch("http://localhost:3001/users/add-compensatory-hours", {
-                    method: "PATCH",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ rut, hoursToAdd: nDias }),
-                });
-            }
+          
     
             alert("Permiso agregado correctamente");
             setRut("");
@@ -109,7 +91,7 @@ const AgregarPermiso = () => {
                     <div>
                         <p className="text-gray-700 text-sm mb-1">Tipo de Permiso</p>
                         <div className="grid grid-cols-3 gap-1">
-                            {["Día Adm.", "Feriado", "Horas Comp."].map((tipo) => (
+                            {["Día Administrativo", "Feriado Legal", "Horas Compensatorias"].map((tipo) => (
                                 <button
                                     key={tipo}
                                     type="button"

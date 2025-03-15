@@ -1,97 +1,244 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from "react"; 
+import axios from "axios"; 
+import { format, toZonedTime } from "date-fns-tz";
+import { addHours, parseISO } from "date-fns";
 
-const BACKEND_URL = "http://localhost:3001";
+const formatDate = (isoDate: string) => {
+  const timeZone = "America/Santiago"; // Zona horaria de Chile
+  const dateWithOffset = addHours(parseISO(isoDate), 12); // Asegurar que sea mediodía en UTC
+  const zonedDate = toZonedTime(dateWithOffset, timeZone);
+  return format(zonedDate, "dd/MM/yyyy");
+};
 
+
+const ITEMS_PER_PAGE = 6;
+
+const API_URL = process.env.REACT_APP_API_URL || "http://localhost:3001";
 const UpdatePermissions: React.FC = () => {
-    const [rut, setRut] = useState<string>('');
-    const [permissions, setPermissions] = useState<string[]>([]);
-    const [message, setMessage] = useState<string>('');
-    const [hasCreatePermission, setHasCreatePermission] = useState<boolean>(false);
-    const navigate = useNavigate();
+  const [searchRut, setSearchRut] = useState(""); 
+  const [selectedWorker, setSelectedWorker] = useState<any | null>(null); 
+  const [permissions, setPermissions] = useState<any[]>([]); 
+  const [showPermissionsPopup, setShowPermissionsPopup] = useState(false);
+  const [training, setTraining] = useState<any[]>([]); 
+  const [showtraining, setShowtraining] = useState(false);
+  
 
-   
-    const handleRutChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setRut(event.target.value);
-    };
+  const fetchWorkerByRut = async (rut: string) => {
+    if (rut.trim().length === 0) {
+      setSelectedWorker(null);
+      return;
+    }
 
-
-    const handlePermissionClick = (permission: string) => {
-        setPermissions(prevPermissions => {
-            if (!prevPermissions.includes(permission)) {
-                return [...prevPermissions, permission];
-            }
-            return prevPermissions; 
-        });
-    };
-
-
-    const handleUpdatePermissions = async () => {
-        try {
-            const response = await axios.put(`${BACKEND_URL}/users/update-permissions`, {
-                rut: rut,
-                permissions: permissions
-            });
-
-            setMessage(response.data.message);
-        } catch (error) {
-            setMessage('Error al actualizar los permisos');
-            console.error(error);
+    try {
+      const response = await axios.get(`${API_URL}/users/${rut}`);
+      console.log("Datos del trabajador:", response.data); 
+      setSelectedWorker(response.data);
+    } catch (error) {
+      console.error("Error al obtener los datos del trabajador:", error);
+      setSelectedWorker(null);
+    }
+  };
+  const handleDeletePermission = async (permisoItem: any) => {
+    try {
+      const response = await fetch(`${API_URL}/permisos/eliminar-permiso`, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ permisoId: permisoItem._id }),
+      });
+  
+      const text = await response.text(); // Obtiene la respuesta como texto
+      try {
+        const data = JSON.parse(text); // Intenta convertirlo a JSON
+        if (response.ok) {
+          alert("Permiso eliminado correctamente");
+          setPermissions((prev) => prev.filter((p) => p._id !== permisoItem._id));
+        } else {
+          alert(data.message || "Error al eliminar el permiso");
         }
-    };
+      } catch (jsonError) {
+        console.error("Respuesta inesperada:", text);
+        alert("Error inesperado en el servidor.");
+      }
+    } catch (error) {
+      console.error("Error al eliminar el permiso:", error);
+      alert("No se pudo conectar con el servidor.");
+    }
+  };
+  
+  
 
-    
+  const fetchPermissionsByRut = async (rut: string) => {
+    if (rut.trim().length === 0) {
+      setPermissions([]);
+      return;
+    }
 
-    return (
-        <div className="bg-gradient-to-r from-gray-600 to-white min-h-screen flex flex-col items-center justify-center bg-gray-50 py-10 px-4">
-            <div className="bg-white p-8 rounded-xl shadow-lg w-full sm:w-96">
-                <h2 className="text-2xl font-bold text-center text-gray-700 mb-6">Actualizar permisos de usuario</h2>
-                <div className="mb-4">
-                    <label htmlFor="rut" className="block text-sm font-medium text-gray-600">RUT:</label>
-                    <input
-                        type="text"
-                        id="rut"
-                        value={rut}
-                        onChange={handleRutChange}
-                        className="mt-2 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                    />
-                </div>
+    try {
+      const response = await axios.get(`${API_URL}/permisos/listar/${rut}`);
+      console.log("Permisos del trabajador:", response.data);
+      setPermissions(response.data);
+    } catch (error) {
+      console.error("Error al obtener los permisos del trabajador:", error);
+      setPermissions([]); 
+    }
+  };
 
-                <h3 className="text-lg font-medium text-center text-gray-600 mt-6 mb-4">¿Qué permiso quieres agregarle al usuario?</h3>
-                
-                <div className="flex justify-center space-x-4 mb-6">
-                    {["crear", "eliminar", "ver"].map(permission => (
-                        <button
-                            key={permission}
-                            onClick={() => handlePermissionClick(permission)}
-                            className="bg-indigo-600 text-white font-semibold py-2 px-6 rounded-lg hover:bg-indigo-700 transition duration-200"
-                        >
-                            {permission}
-                        </button>
-                    ))}
-                </div>
+  const fetchtrainingsByRut = async (rut: string) => {
+    if (rut.trim().length === 0) {
+      setTraining([]);
+      return;
+    }
 
-                <div className="mb-6">
-                    <h4 className="text-lg font-medium text-gray-700">Permisos seleccionados:</h4>
-                    <ul className="list-disc list-inside mt-2 text-gray-600">
-                        {permissions.map(permission => (
-                            <li key={permission}>{permission}</li>
-                        ))}
-                    </ul>
-                </div>
+    try {
+      const response = await axios.get(`${API_URL}/capacitaciones/listar/${rut}`);
+      console.log("Capacitaciones del trabajador:", response.data);
+      setTraining(response.data.capacitaciones); 
+    } catch (error) {
+      console.error("Error al obtener las capacitaciones del trabajador:", error);
+      setTraining([]); 
+    }
+  };
 
-                <button
-                    onClick={handleUpdatePermissions}
-                    className="w-full bg-indigo-600 text-white py-3 rounded-lg font-semibold hover:bg-indigo-700 transition duration-200"
-                >
-                    Actualizar Permisos
-                </button>
+  useEffect(() => {
+    if (searchRut.trim().length > 0) {
+      fetchWorkerByRut(searchRut);
+      fetchPermissionsByRut(searchRut); 
+      fetchtrainingsByRut(searchRut); 
+    } else {
+      setSelectedWorker(null); 
+      setPermissions([]); 
+    }
+  }, [searchRut]);
 
-                {message && <p className="mt-4 text-center text-sm text-gray-500">{message}</p>}
-            </div>
+  return (
+  <div className="relative bg-gradient-to-r from-gray-600 to-white min-h-screen flex items-center justify-center overflow-hidden p-4">
+    <div className="relative w-full max-w-lg bg-transparent border-2 border-white/50 rounded-xl backdrop-blur-xl shadow-lg flex flex-col justify-center items-center p-6">
+      <h2 className="text-white text-3xl font-Merriweather mb-6 text-center">Buscar Funcionarios</h2>
+
+      <input
+        type="text"
+        placeholder="Buscar por RUT EJ: 123456-7"
+        value={searchRut}
+        onChange={(e) => setSearchRut(e.target.value)}
+        className="w-full p-3 rounded-lg bg-white/10 text-white placeholder-gray-300 focus:outline-none"
+      />
+    </div>
+
+    {selectedWorker && (
+      <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4">
+        <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
+          <h3 className="text-xl font-bold mb-4 text-center">Datos del Funcionario</h3>
+          <p><strong>Nombre:</strong> {selectedWorker.user.nombres} {selectedWorker.user.apellidos}</p>
+          <p><strong>RUT:</strong> {selectedWorker.user.rut}</p>
+          <p><strong>Cargo:</strong> {selectedWorker.user.cargo}</p>
+          <p><strong>Tipo de Contrato:</strong> {selectedWorker.user.tipoContrato}</p>
+          <p><strong>Feriados Legales:</strong> {selectedWorker.user.feriadoLegal}</p>
+          <p><strong>Días Administrativos:</strong> {selectedWorker.user.diasAdministrativos}</p>
+          <p><strong>Horas Compensatorias:</strong> {selectedWorker.user.horasCompensatorias}</p>
+
+          <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-2">
+            <button
+              onClick={() => setShowPermissionsPopup(true)}
+              className="p-2 rounded-lg bg-blue-500 text-white hover:bg-blue-600"
+            >Ver Permisos</button>
+            <button
+              onClick={() => setShowtraining(true)}
+              className="p-2 rounded-lg bg-blue-500 text-white hover:bg-blue-600"
+            >Ver Capacitaciones</button>
+            <button
+              onClick={() => setSelectedWorker(null)}
+              className="p-2 rounded-lg bg-gray-500 text-white hover:bg-gray-600 col-span-1 sm:col-span-2"
+            >Cerrar</button>
+          </div>
         </div>
-    );
+      </div>
+    )}
+
+{showPermissionsPopup && (
+  <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4">
+    <div className="bg-white p-6 rounded-lg shadow-lg max-w-4xl w-full">
+      <h3 className="text-xl font-bold mb-4 text-center">Permisos del Funcionario</h3>
+      
+      {permissions.length > 0 ? (
+        <div className="overflow-x-auto">
+          <table className="min-w-full bg-white border border-gray-300">
+            <thead className="bg-gray-200">
+              <tr>
+                <th className="border px-4 py-2">Tipo</th>
+                <th className="border px-4 py-2">Estado</th>
+                <th className="border px-4 py-2">Solicitud</th>
+                <th className="border px-4 py-2">Inicio</th>
+                <th className="border px-4 py-2">Término</th>
+                <th className="border px-4 py-2">Días</th>
+                <th className="border px-4 py-2">Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              {permissions.flatMap((permiso, index) =>
+                permiso.permisos.map((permisoItem: any, subIndex: any) => (
+                  <tr key={`${index}-${subIndex}`} className="border">
+                    <td className="border px-4 py-2">{permisoItem.tipoPermiso}</td>
+                    <td className="border px-4 py-2">{permisoItem.estado}</td>
+                    <td className="border px-4 py-2">{formatDate(permisoItem.fechaSolicitud)}</td>
+                    <td className="border px-4 py-2">{formatDate(permisoItem.fechaInicio)}</td>
+                    <td className="border px-4 py-2">{permisoItem.fechaTermino ? formatDate(permisoItem.fechaTermino) : "No especificada"}</td>
+                    <td className="border px-4 py-2">{permisoItem.nDias}</td>
+                    <td className="border px-4 py-2">
+                      <button 
+                        className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600"
+                        onClick={() => handleDeletePermission(permisoItem)}
+                      >
+                        Eliminar
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+      ) : (
+        <p className="text-center text-gray-600">No hay permisos</p>
+      )}
+
+      <button
+        onClick={() => setShowPermissionsPopup(false)}
+        className="mt-6 w-full p-2 rounded-lg bg-blue-500 text-white hover:bg-blue-600"
+      >
+        Cerrar
+      </button>
+    </div>
+  </div>
+)}
+
+
+    {showtraining && (
+      <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4">
+        <div className="bg-white p-6 rounded-lg shadow-lg max-w-4xl w-full">
+          <h3 className="text-xl font-bold mb-4 text-center">Capacitaciones del Funcionario</h3>
+          {training.length > 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+              {training.map((capacitacion, index) => (
+                <div key={index} className="border p-4 rounded-lg shadow-md bg-gray-100">
+                  <p><strong>Nombre:</strong> {capacitacion.nombreCapacitacion}</p>
+                  <p><strong>Horas:</strong> {capacitacion.horasRealizadas}</p>
+                  <p><strong>Nota:</strong> {capacitacion.nota}</p>
+                  <p><strong>Peso:</strong> {capacitacion.PesoRelativo}</p>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-center text-gray-600">No hay capacitaciones</p>
+          )}
+          <button
+            onClick={() => setShowtraining(false)}
+            className="mt-6 w-full p-2 rounded-lg bg-blue-500 text-white hover:bg-blue-600"
+          >Cerrar</button>
+        </div>
+      </div>
+    )}
+  </div>
+);
 };
 
 export default UpdatePermissions;
