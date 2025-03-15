@@ -48,7 +48,7 @@ const First: React.FC = () => {
 
         {/* Tarjeta 5 */}
         <Card
-          title="Modificar permisos"
+          title="Modificar Permisos y Capacitaciones"
           description="Modifica los permisos de los usuarios."
           onClick={() => navigate("/admin/updatePermisos")}
         />

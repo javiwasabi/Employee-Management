@@ -15,101 +15,131 @@ const ITEMS_PER_PAGE = 6;
 
 const API_URL = process.env.REACT_APP_API_URL || "http://localhost:3001";
 const UpdatePermissions: React.FC = () => {
-  const [searchRut, setSearchRut] = useState(""); 
-  const [selectedWorker, setSelectedWorker] = useState<any | null>(null); 
-  const [permissions, setPermissions] = useState<any[]>([]); 
-  const [showPermissionsPopup, setShowPermissionsPopup] = useState(false);
-  const [training, setTraining] = useState<any[]>([]); 
-  const [showtraining, setShowtraining] = useState(false);
+    const [searchRut, setSearchRut] = useState(""); 
+    const [selectedWorker, setSelectedWorker] = useState<any | null>(null); 
+    const [permissions, setPermissions] = useState<any[]>([]); 
+    const [showPermissionsPopup, setShowPermissionsPopup] = useState(false);
+    const [training, setTraining] = useState<any[]>([]); 
+    const [showtraining, setShowtraining] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState("");
+    const [searchLetter, setSearchLetter] = useState("");
+    const [users, setUsers] = useState<{ nombres: string; rut: string }[]>([]);
   
-
-  const fetchWorkerByRut = async (rut: string) => {
-    if (rut.trim().length === 0) {
-      setSelectedWorker(null);
-      return;
-    }
-
-    try {
-      const response = await axios.get(`${API_URL}/users/${rut}`);
-      console.log("Datos del trabajador:", response.data); 
-      setSelectedWorker(response.data);
-    } catch (error) {
-      console.error("Error al obtener los datos del trabajador:", error);
-      setSelectedWorker(null);
-    }
-  };
-  const handleDeletePermission = async (permisoItem: any) => {
-    try {
-      const response = await fetch(`${API_URL}/permisos/eliminar-permiso`, {
-        method: "DELETE",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ permisoId: permisoItem._id }),
-      });
-  
-      const text = await response.text(); // Obtiene la respuesta como texto
-      try {
-        const data = JSON.parse(text); // Intenta convertirlo a JSON
-        if (response.ok) {
-          alert("Permiso eliminado correctamente");
-          setPermissions((prev) => prev.filter((p) => p._id !== permisoItem._id));
-        } else {
-          alert(data.message || "Error al eliminar el permiso");
-        }
-      } catch (jsonError) {
-        console.error("Respuesta inesperada:", text);
-        alert("Error inesperado en el servidor.");
+    const fetchWorkerByRut = async (rut: string) => {
+      if (rut.trim().length === 0) {
+        setSelectedWorker(null);
+        return;
       }
-    } catch (error) {
-      console.error("Error al eliminar el permiso:", error);
-      alert("No se pudo conectar con el servidor.");
-    }
-  };
+  
+      try {
+        const response = await axios.get(`${API_URL}/users/${rut}`);
+        console.log("Datos del trabajador:", response.data); 
+        setSelectedWorker(response.data);
+      } catch (error) {
+        console.error("Error al obtener los datos del trabajador:", error);
+        setSelectedWorker(null);
+      }
+    };
+  
+    const fetchPermissionsByRut = async (rut: string) => {
+      if (rut.trim().length === 0) {
+        setPermissions([]);
+        return;
+      }
+  
+      try {
+        const response = await axios.get(`${API_URL}/permisos/listar/${rut}`);
+        console.log("Permisos del trabajador:", response.data);
+        setPermissions(response.data);
+      } catch (error) {
+        console.error("Error al obtener los permisos del trabajador:", error);
+        setPermissions([]); 
+      }
+    };
+  
+    const fetchtrainingsByRut = async (rut: string) => {
+      if (rut.trim().length === 0) {
+        setTraining([]);
+        return;
+      }
+  
+      try {
+        const response = await axios.get(`${API_URL}/capacitaciones/listar/${rut}`);
+        console.log("Capacitaciones del trabajador:", response.data);
+        setTraining(response.data.capacitaciones); 
+      } catch (error) {
+        console.error("Error al obtener las capacitaciones del trabajador:", error);
+        setTraining([]); 
+      }
+    };
+    useEffect(() => {
+      const fetchUsersByLetter = async () => {
+        if (!searchLetter) return;
+  
+        setLoading(true);
+        setError("");
+        try {
+          const response = await fetch(`/users/buscar-inicial?letter=${searchLetter}`);
+  
+          const data = await response.json();
+  
+          if (!response.ok) throw new Error(data.message || "Error al obtener datos");
+          
+          setUsers(data.users);
+        }catch (err) {
+          if (err instanceof Error) {
+            setError(err.message);
+          } else {
+            setError("Ocurrió un error desconocido");
+          }      
+        } finally {
+          setLoading(false);
+        }
+      };
+  
+      fetchUsersByLetter();
+    }, [searchLetter]);
   
   
-
-  const fetchPermissionsByRut = async (rut: string) => {
-    if (rut.trim().length === 0) {
-      setPermissions([]);
-      return;
-    }
-
-    try {
-      const response = await axios.get(`${API_URL}/permisos/listar/${rut}`);
-      console.log("Permisos del trabajador:", response.data);
-      setPermissions(response.data);
-    } catch (error) {
-      console.error("Error al obtener los permisos del trabajador:", error);
-      setPermissions([]); 
-    }
-  };
-
-  const fetchtrainingsByRut = async (rut: string) => {
-    if (rut.trim().length === 0) {
-      setTraining([]);
-      return;
-    }
-
-    try {
-      const response = await axios.get(`${API_URL}/capacitaciones/listar/${rut}`);
-      console.log("Capacitaciones del trabajador:", response.data);
-      setTraining(response.data.capacitaciones); 
-    } catch (error) {
-      console.error("Error al obtener las capacitaciones del trabajador:", error);
-      setTraining([]); 
-    }
-  };
-
-  useEffect(() => {
-    if (searchRut.trim().length > 0) {
-      fetchWorkerByRut(searchRut);
-      fetchPermissionsByRut(searchRut); 
-      fetchtrainingsByRut(searchRut); 
-    } else {
-      setSelectedWorker(null); 
-      setPermissions([]); 
-    }
-  }, [searchRut]);
-
+    useEffect(() => {
+      if (searchRut.trim().length > 0) {
+        fetchWorkerByRut(searchRut);
+        fetchPermissionsByRut(searchRut); 
+        fetchtrainingsByRut(searchRut); 
+      } else {
+        setSelectedWorker(null); 
+        setPermissions([]); 
+      }
+    }, [searchRut]);
+    const handleDeletePermission = async (permisoItem: any) => {
+        try {
+          const response = await fetch(`${API_URL}/permisos/eliminar-permiso`, {
+            method: "DELETE",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ permisoId: permisoItem._id }),
+          });
+      
+          const text = await response.text(); // Obtiene la respuesta como texto
+          try {
+            const data = JSON.parse(text); // Intenta convertirlo a JSON
+            if (response.ok) {
+              alert("Permiso eliminado correctamente");
+              setPermissions((prev) => prev.filter((p) => p._id !== permisoItem._id));
+            } else {
+              alert(data.message || "Error al eliminar el permiso");
+            }
+          } catch (jsonError) {
+            console.error("Respuesta inesperada:", text);
+            alert("Error inesperado en el servidor.");
+          }
+        } catch (error) {
+          console.error("Error al eliminar el permiso:", error);
+          alert("No se pudo conectar con el servidor.");
+        }
+      };
+      
+  
   return (
   <div className="relative bg-gradient-to-r from-gray-600 to-white min-h-screen flex items-center justify-center overflow-hidden p-4">
     <div className="relative w-full max-w-lg bg-transparent border-2 border-white/50 rounded-xl backdrop-blur-xl shadow-lg flex flex-col justify-center items-center p-6">
@@ -122,6 +152,43 @@ const UpdatePermissions: React.FC = () => {
         onChange={(e) => setSearchRut(e.target.value)}
         className="w-full p-3 rounded-lg bg-white/10 text-white placeholder-gray-300 focus:outline-none"
       />
+       {/* Texto "Buscar por nombre" */}
+  <p className="text-white text-lg font-semibold mt-4">Buscar por nombre</p>
+
+{/* Bloque de letras con diseño elegante */}
+<div className="mt-2 grid grid-cols-7 gap-2">
+  {"ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("").map((letter) => (
+    <button
+      key={letter}
+      className={`p-3 text-lg font-semibold text-white rounded-md transition-all duration-300 
+      ${searchLetter === letter ? "bg-white text-black shadow-md" : "bg-white/20 border border-white/50 hover:bg-white/30 focus:bg-white/40"}`}
+      onClick={() => {
+        setSearchLetter(letter);
+        setSearchRut(""); // Resetea la búsqueda por RUT
+      }}
+    >
+      {letter}
+    </button>
+  ))}
+</div>
+
+
+      {/* Mensajes de carga y error */}
+      {loading && <p className="text-white mt-4">Cargando...</p>}
+      {error && <p className="text-red-500 mt-4">{error}</p>}
+
+      {/* Lista de resultados */}
+      <ul className="mt-4 text-white">
+        {users.length > 0 ? (
+          users.map((user) => (
+            <li key={user.rut} className="p-2 border-b border-white/50">
+              {user.nombres} - {user.rut}
+            </li>
+          ))
+        ) : (
+          !loading && <li className="p-2 text-gray-300">No se encontraron resultados</li>
+        )}
+      </ul>
     </div>
 
     {selectedWorker && (

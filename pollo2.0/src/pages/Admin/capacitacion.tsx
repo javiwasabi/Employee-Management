@@ -91,7 +91,7 @@ const AgregarCapacitacion = () => {
                         </div>
                     </div>
                     <div>
-                        <label className="block text-gray-700 text-sm mb-1">Peso Relativo</label>
+                        <label className="block text-gray-700 text-sm mb-1">Atingencia Médica</label>
                         <input
                             type="text"
                             value={pesoRelativo}
