@@ -27,7 +27,8 @@
     "nodemailer": "^6.9.16",
     "nodemon": "^3.1.9",
     "parser": "^0.1.4",
-    "uuid": "^11.0.4"
+    "uuid": "^11.0.4",
+    "yocto-queue": "^1.2.0"
   },
   "devDependencies": {
     "mongodb-memory-server": "^10.1.3",

@@ -25,6 +25,8 @@ const UpdatePermissions: React.FC = () => {
     const [error, setError] = useState("");
     const [searchLetter, setSearchLetter] = useState("");
     const [users, setUsers] = useState<{ nombres: string; rut: string }[]>([]);
+
+    const rutadmin = localStorage.getItem("rut");
   
     const fetchWorkerByRut = async (rut: string) => {
       if (rut.trim().length === 0) {
@@ -112,32 +114,39 @@ const UpdatePermissions: React.FC = () => {
         setPermissions([]); 
       }
     }, [searchRut]);
+
+ 
     const handleDeletePermission = async (permisoItem: any) => {
+      // ✅ Corrección: destructuración correcta
+      const { rut, _id: permisoId } = permisoItem; 
+    
+      try {
+        const response = await fetch(`${API_URL}/permisos/eliminar-permiso/${rut}`, { 
+          method: "DELETE",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ permisoItem }) // ✅ Enviar solo permisoId en el body
+        });
+    
+        const text = await response.text(); // Obtener respuesta como texto
         try {
-          const response = await fetch(`${API_URL}/permisos/eliminar-permiso`, {
-            method: "DELETE",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ permisoId: permisoItem._id }),
-          });
-      
-          const text = await response.text(); // Obtiene la respuesta como texto
-          try {
-            const data = JSON.parse(text); // Intenta convertirlo a JSON
-            if (response.ok) {
-              alert("Permiso eliminado correctamente");
-              setPermissions((prev) => prev.filter((p) => p._id !== permisoItem._id));
-            } else {
-              alert(data.message || "Error al eliminar el permiso");
-            }
-          } catch (jsonError) {
-            console.error("Respuesta inesperada:", text);
-            alert("Error inesperado en el servidor.");
+          const data = JSON.parse(text); // Intentar parsear a JSON
+          if (response.ok) {
+            alert("Permiso eliminado correctamente");
+            setPermissions((prev) => prev.filter((p) => p._id !== permisoId));
+          } else {
+            alert(data.message || "Error al eliminar el permiso");
           }
-        } catch (error) {
-          console.error("Error al eliminar el permiso:", error);
-          alert("No se pudo conectar con el servidor.");
+        } catch (jsonError) {
+          console.error("Respuesta inesperada:", text);
+          alert("Error inesperado en el servidor.");
         }
-      };
+      } catch (error) {
+        console.error("Error al eliminar el permiso:", error);
+        alert("No se pudo conectar con el servidor.");
+      }
+    };
+    
+    
       
   
   return (
