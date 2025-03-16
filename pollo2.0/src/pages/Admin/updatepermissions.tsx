@@ -40,7 +40,7 @@ const UpdatePermissions: React.FC = () => {
         console.log("Datos del trabajador:", response.data); 
         setSelectedWorker(response.data);
         setRutmodi(response.data.user.rut);
-        console.log("ESTE ES EL RUT A MODIFICAR: ", setRutmodi)
+        console.log("ESTE ES EL RUT A MODIFICAR: ", rutmodi)
       } catch (error) {
         console.error("Error al obtener los datos del trabajador:", error);
         setSelectedWorker(null);

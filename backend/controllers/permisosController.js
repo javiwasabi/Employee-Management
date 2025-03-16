@@ -82,13 +82,13 @@ async function eliminarPermiso(permisoData) {
         }
 
         // Buscar usuario al que se le eliminará el permiso
-        const targetUser = await User.findOne({ rutmodi });
+        const targetUser = await User.findOne({rut: rutmodi });
         if (!targetUser) {
             return { error: `Usuario con RUT: ${rutmodi} no encontrado`, status: 404 };
         }
 
         // Buscar los permisos del usuario
-        let permisos = await Permiso.findOne({ rut });
+        let permisos = await Permiso.findOne({rut: rutmodi });
         if (!permisos) {
             return { error: `No se encontraron permisos para el usuario con RUT: ${rutmodi}`, status: 404 };
         }
