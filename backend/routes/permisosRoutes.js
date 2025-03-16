@@ -5,7 +5,7 @@ const { getPermisos, getPermisosPorRut } = require('../controllers/permisosContr
 
 router.get('/listar', getPermisos);
 router.get('/listar/:rut', getPermisosPorRut);
-router.patch('/eliminar-permiso', eliminarPermiso);
+router.delete('/eliminar-permiso', eliminarPermiso);
 router.post('/agregar/:rut', async (req, res) => {
 
     const permisoData = req.body; 

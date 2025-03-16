@@ -15,7 +15,7 @@ console.log(process.env.NODE_ENV);
 
 connectDB();
 app.use(cors(corsOptions));  // 🔹 Debe ir primero
-app.use(express.json());
+
 app.use(cookieParser());
 
 
@@ -30,7 +30,7 @@ app.use('/api', require('./routes/authRoutes'));
 app.use('/permisos', require('./routes/permisosRoutes'));
 app.use('/permisos', require('./routes/permisosRoutes'));
 app.use('/capacitaciones', require('./routes/capacitacionesRoutes'));
-
+app.use(express.json());
 
 
 app.all('*', (req, res) => {
