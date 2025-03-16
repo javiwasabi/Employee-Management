@@ -5,7 +5,9 @@ const { getPermisos, getPermisosPorRut } = require('../controllers/permisosContr
 
 router.get('/listar', getPermisos);
 router.get('/listar/:rut', getPermisosPorRut);
+
 router.delete('/eliminar-permiso/:rut', async (req, res) => {
+    console.log("Datos recibidos en DELETE:", req.params, req.body); // 🔍 Para depurar
 
     const permisoData = req.body; 
 
@@ -16,6 +18,7 @@ router.delete('/eliminar-permiso/:rut', async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 });
+
 
 module.exports = router;
 

@@ -117,19 +117,18 @@ const UpdatePermissions: React.FC = () => {
 
  
     const handleDeletePermission = async (permisoItem: any) => {
-      // ✅ Corrección: destructuración correcta
-      const { rut, _id: permisoId } = permisoItem; 
+      const { rut, rutadmin, tipoPermiso, nDias, _id: permisoId } = permisoItem; 
     
       try {
         const response = await fetch(`${API_URL}/permisos/eliminar-permiso/${rut}`, { 
           method: "DELETE",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ permisoItem }) // ✅ Enviar solo permisoId en el body
+          body: JSON.stringify({ permisoId, rutadmin, tipoPermiso, nDias }) // ✅ Solo enviar los datos necesarios
         });
     
-        const text = await response.text(); // Obtener respuesta como texto
+        const text = await response.text(); 
         try {
-          const data = JSON.parse(text); // Intentar parsear a JSON
+          const data = JSON.parse(text);
           if (response.ok) {
             alert("Permiso eliminado correctamente");
             setPermissions((prev) => prev.filter((p) => p._id !== permisoId));

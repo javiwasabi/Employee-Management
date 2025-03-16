@@ -22,12 +22,12 @@ app.use(cookieParser());
 app.use(logger);
 
 app.use('/', express.static(path.join(__dirname, 'public')));
-
+app.use(express.json());
 app.use('/', require('./routes/root'));
 app.use('/users', require('./routes/userRoutes'));
 app.use('/auth', require('./routes/authRoutes'));
 app.use('/api', require('./routes/authRoutes')); 
-app.use('/permisos', require('./routes/permisosRoutes'));
+
 app.use('/permisos', require('./routes/permisosRoutes'));
 app.use('/capacitaciones', require('./routes/capacitacionesRoutes'));
 app.use(express.json());
