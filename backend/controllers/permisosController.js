@@ -67,6 +67,8 @@ async function agregarPermiso(permisoData) {
 async function eliminarPermiso(permisoData) {
     try {
         const { rut, rutadmin, tipoPermiso, nDias, permisoId } = permisoData;
+        console.log(permisosData)
+
 
         // Buscar al usuario administrador
         const adminUser = await User.findOne({ rut: rutadmin });
