@@ -71,39 +71,39 @@ async function eliminarPermiso(permisoData) {
         // Buscar al usuario administrador
         const adminUser = await User.findOne({ rut: rutadmin });
         if (!adminUser) {
-            return res.status(404).json({ message: `Usuario administrador con RUT: ${rutadmin} no encontrado` });
+            return { error: `Usuario administrador con RUT: ${rutadmin} no encontrado`, status: 404 };
         }
 
-        // Verificar si el administrador tiene permisos para eliminar
+        // Verificar permisos del administrador
         if (!adminUser.permissions.includes("eliminar")) {
-            return res.status(403).json({ message: 'Permisos no autorizados' });
+            return { error: "Permisos no autorizados", status: 403 };
         }
 
-        // Buscar al usuario al que se le eliminará el permiso
+        // Buscar usuario al que se le eliminará el permiso
         const targetUser = await User.findOne({ rut });
         if (!targetUser) {
-            return res.status(404).json({ message: `Usuario con RUT: ${rut} no encontrado` });
+            return { error: `Usuario con RUT: ${rut} no encontrado`, status: 404 };
         }
 
-        // Buscar el permiso en la colección de permisos
+        // Buscar los permisos del usuario
         let permisos = await Permiso.findOne({ rut });
         if (!permisos) {
-            return res.status(404).json({ message: `No se encontraron permisos para el usuario con RUT: ${rut}` });
+            return { error: `No se encontraron permisos para el usuario con RUT: ${rut}`, status: 404 };
         }
 
         // Buscar el permiso a eliminar
         const permisoIndex = permisos.permisos.findIndex(p => p._id.toString() === permisoId);
         if (permisoIndex === -1) {
-            return res.status(404).json({ message: "Permiso no encontrado" });
+            return { error: "Permiso no encontrado", status: 404 };
         }
 
         // Convertir nDias a número
         const dias = Number(nDias);
         if (isNaN(dias)) {
-            return res.status(400).json({ message: "El número de días en el permiso no es válido" });
+            return { error: "El número de días en el permiso no es válido", status: 400 };
         }
 
-        // Revertir los días según el tipo de permiso eliminado
+        // Revertir los días en función del tipo de permiso eliminado
         if (tipoPermiso === "Día Administrativo") {
             targetUser.diasAdministrativos += dias;
         } else if (tipoPermiso === "Feriado Legal") {
@@ -111,24 +111,25 @@ async function eliminarPermiso(permisoData) {
         } else if (tipoPermiso === "Horas Compensatorias") {
             targetUser.horasCompensatorias -= dias;
         } else {
-            return res.status(400).json({ message: "Tipo de permiso no válido" });
+            return { error: "Tipo de permiso no válido", status: 400 };
         }
 
         // Guardar los cambios en el usuario
         await targetUser.save();
 
-        // Eliminar el permiso del usuario
+        // Eliminar el permiso de la lista de permisos
         permisos.permisos.splice(permisoIndex, 1);
 
         // Guardar los cambios en la colección de permisos
         await permisos.save();
 
-        return res.status(200).json({ message: "Permiso eliminado correctamente y días revertidos", user: targetUser });
+        return { success: true, message: "Permiso eliminado correctamente y días revertidos", user: targetUser };
     } catch (error) {
         console.error(error);
-        return res.status(500).json({ message: 'Error al eliminar el permiso' });
+        return { error: "Error al eliminar el permiso", status: 500 };
     }
 }
+
 
 
 

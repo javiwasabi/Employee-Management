@@ -7,17 +7,18 @@ router.get('/listar', getPermisos);
 router.get('/listar/:rut', getPermisosPorRut);
 
 router.delete('/eliminar-permiso/:rut', async (req, res) => {
-    console.log("Datos recibidos en DELETE:", req.params, req.body); // 🔍 Para depurar
+    console.log("Datos recibidos en DELETE:", req.params, req.body); 
 
     const permisoData = req.body; 
+    const result = await eliminarPermiso(permisoData);
 
-    try {
-        const permisoEliminado = await eliminarPermiso(permisoData);
-        res.json({ message: 'Permiso eliminado correctamente', permiso: permisoEliminado });
-    } catch (error) {
-        res.status(500).json({ message: error.message });
+    if (result.error) {
+        return res.status(result.status).json({ message: result.error });
     }
+
+    res.json({ message: result.message, permiso: result.user });
 });
+
 
 
 module.exports = router;
