@@ -25,8 +25,9 @@ const UpdatePermissions: React.FC = () => {
     const [error, setError] = useState("");
     const [searchLetter, setSearchLetter] = useState("");
     const [users, setUsers] = useState<{ nombres: string; rut: string }[]>([]);
+    const [rutmodi, setRutmodi] = useState("");
 
-    const rutadmin = localStorage.getItem("rut");
+    const rutAdmin = localStorage.getItem("rut");
   
     const fetchWorkerByRut = async (rut: string) => {
       if (rut.trim().length === 0) {
@@ -38,6 +39,8 @@ const UpdatePermissions: React.FC = () => {
         const response = await axios.get(`${API_URL}/users/${rut}`);
         console.log("Datos del trabajador:", response.data); 
         setSelectedWorker(response.data);
+        setRutmodi(response.data.user.rut);
+        console.log("ESTE ES EL RUT A MODIFICAR: ", setRutmodi)
       } catch (error) {
         console.error("Error al obtener los datos del trabajador:", error);
         setSelectedWorker(null);
@@ -117,13 +120,14 @@ const UpdatePermissions: React.FC = () => {
 
  
     const handleDeletePermission = async (permisoItem: any) => {
-      const { rut, rutadmin, tipoPermiso, nDias, _id: permisoId } = permisoItem; 
+      
+      const { tipoPermiso, nDias, _id: permisoId } = permisoItem; 
     
       try {
-        const response = await fetch(`${API_URL}/permisos/eliminar-permiso/${rut}`, { 
+        const response = await fetch(`${API_URL}/permisos/eliminar-permiso/${rutmodi}`, { 
           method: "DELETE",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ permisoId, rutadmin, tipoPermiso, nDias }) // ✅ Solo enviar los datos necesarios
+          body: JSON.stringify({ permisoId, rutAdmin, rutmodi, tipoPermiso, nDias }) // ✅ Solo enviar los datos necesarios
         });
     
         const text = await response.text(); 
@@ -203,6 +207,7 @@ const UpdatePermissions: React.FC = () => {
       <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4">
         <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
           <h3 className="text-xl font-bold mb-4 text-center">Datos del Funcionario</h3>
+  
           <p><strong>Nombre:</strong> {selectedWorker.user.nombres} {selectedWorker.user.apellidos}</p>
           <p><strong>RUT:</strong> {selectedWorker.user.rut}</p>
           <p><strong>Cargo:</strong> {selectedWorker.user.cargo}</p>

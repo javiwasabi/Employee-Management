@@ -66,14 +66,14 @@ async function agregarPermiso(permisoData) {
 
 async function eliminarPermiso(permisoData) {
     try {
-        const { rut, rutadmin, tipoPermiso, nDias, permisoId } = permisoData;
-        console.log(permisosData)
+        const { rutAdmin, rutmodi, tipoPermiso, nDias, permisoId } = permisoData;
+        console.log(rutAdmin)
 
 
         // Buscar al usuario administrador
-        const adminUser = await User.findOne({ rut: rutadmin });
+        const adminUser = await User.findOne({ rut: rutAdmin });
         if (!adminUser) {
-            return { error: `Usuario administrador con RUT: ${rutadmin} no encontrado`, status: 404 };
+            return { error: `Usuario administrador con RUT: ${rutAdmin} no encontrado`, status: 404 };
         }
 
         // Verificar permisos del administrador
@@ -82,15 +82,15 @@ async function eliminarPermiso(permisoData) {
         }
 
         // Buscar usuario al que se le eliminará el permiso
-        const targetUser = await User.findOne({ rut });
+        const targetUser = await User.findOne({ rutmodi });
         if (!targetUser) {
-            return { error: `Usuario con RUT: ${rut} no encontrado`, status: 404 };
+            return { error: `Usuario con RUT: ${rutmodi} no encontrado`, status: 404 };
         }
 
         // Buscar los permisos del usuario
         let permisos = await Permiso.findOne({ rut });
         if (!permisos) {
-            return { error: `No se encontraron permisos para el usuario con RUT: ${rut}`, status: 404 };
+            return { error: `No se encontraron permisos para el usuario con RUT: ${rutmodi}`, status: 404 };
         }
 
         // Buscar el permiso a eliminar
