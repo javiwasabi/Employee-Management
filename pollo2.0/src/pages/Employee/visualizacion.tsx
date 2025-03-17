@@ -127,71 +127,87 @@ const ShowWorkersEmployee: React.FC = () => {
         </div>
       )}
 
-      {/* Modal de permisos */}
-      {showPermissionsPopup && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center">
-          <div className="bg-white p-6 rounded-lg shadow-lg max-w-4xl w-full">
-            <h3 className="text-xl font-bold mb-4 text-center">Permisos del Funcionario</h3>
-
-            {permissions.length > 0 ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                {permissions.map((permiso, index) => (
-                  permiso.permisos.map((permisoItem: any, subIndex: number) => (
-                    <div key={`${index}-${subIndex}`} className="border p-4 rounded-lg shadow-md bg-gray-100">
-                      <p><strong>Tipo:</strong> {permisoItem.tipoPermiso}</p>
-                      <p><strong>Estado:</strong> {permisoItem.estado}</p>
-                      <p><strong>Solicitud:</strong> {new Date(permisoItem.fechaSolicitud).toLocaleDateString()}</p>
-                      <p><strong>Inicio:</strong> {new Date(permisoItem.fechaInicio).toLocaleDateString()}</p>
-                      <p><strong>Término:</strong> {permisoItem.fechaTermino ? new Date(permisoItem.fechaTermino).toLocaleDateString() : "No especificada"}</p>
-                      <p><strong>Días:</strong> {permisoItem.nDias}</p>
-                    </div>
-                  ))
-                ))}
-              </div>
-            ) : (
-              <p className="text-center text-gray-600">No hay permisos</p>
-            )}
-
-            <button
-              onClick={() => setShowPermissionsPopup(false)}
-              className="mt-6 w-full p-2 rounded-lg bg-blue-500 text-white hover:bg-blue-600"
-            >
-              Cerrar
-            </button>
-          </div>
+     {/* Modal de permisos */}
+{showPermissionsPopup && (
+  <div className="fixed inset-0 bg-black/50 flex items-center justify-center">
+    <div className="bg-white p-6 rounded-lg shadow-lg max-w-4xl w-full">
+      <h3 className="text-xl font-bold mb-4 text-center">Permisos del Funcionario</h3>
+      {permissions.length > 0 ? (
+        <div className="overflow-x-auto">
+          <table className="min-w-full border-collapse border border-gray-300">
+            <thead>
+              <tr className="bg-gray-200">
+                <th className="border border-gray-300 px-4 py-2">Tipo</th>
+                <th className="border border-gray-300 px-4 py-2">Estado</th>
+                <th className="border border-gray-300 px-4 py-2">Solicitud</th>
+                <th className="border border-gray-300 px-4 py-2">Inicio</th>
+                <th className="border border-gray-300 px-4 py-2">Término</th>
+                <th className="border border-gray-300 px-4 py-2">Días</th>
+              </tr>
+            </thead>
+            <tbody>
+              {permissions.map((permiso, index) => (
+                permiso.permisos.map((permisoItem: any, subIndex: number) => (
+                  <tr key={`${index}-${subIndex}`} className="border border-gray-300">
+                    <td className="border border-gray-300 px-4 py-2">{permisoItem.tipoPermiso}</td>
+                    <td className="border border-gray-300 px-4 py-2">{permisoItem.estado}</td>
+                    <td className="border border-gray-300 px-4 py-2">{new Date(permisoItem.fechaSolicitud).toLocaleDateString()}</td>
+                    <td className="border border-gray-300 px-4 py-2">{new Date(permisoItem.fechaInicio).toLocaleDateString()}</td>
+                    <td className="border border-gray-300 px-4 py-2">{permisoItem.fechaTermino ? new Date(permisoItem.fechaTermino).toLocaleDateString() : "No especificada"}</td>
+                    <td className="border border-gray-300 px-4 py-2">{permisoItem.nDias}</td>
+                  </tr>
+                ))
+              ))}
+            </tbody>
+          </table>
         </div>
+      ) : (
+        <p className="text-center text-gray-600">No hay permisos</p>
       )}
+      <button onClick={() => setShowPermissionsPopup(false)} className="mt-6 w-full p-2 rounded-lg bg-blue-500 text-white hover:bg-blue-600">
+        Cerrar
+      </button>
+    </div>
+  </div>
+)}
 
-      {/* Modal de capacitaciones */}
-      {showtraining && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center">
-          <div className="bg-white p-6 rounded-lg shadow-lg max-w-4xl w-full">
-            <h3 className="text-xl font-bold mb-4 text-center">Capacitaciones del Funcionario</h3>
-
-            {training.length > 0 ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                {training.map((capacitacion, index) => (
-                  <div key={index} className="border p-4 rounded-lg shadow-md bg-gray-100">
-                    <p><strong>Nombre de la Capacitación:</strong> {capacitacion.nombreCapacitacion}</p>
-                    <p><strong>Horas Realizadas:</strong> {capacitacion.horasRealizadas}</p>
-                    <p><strong>Nota:</strong> {capacitacion.nota}</p>
-                    <p><strong>Peso Relativo:</strong> {capacitacion.PesoRelativo}</p>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <p className="text-center text-gray-600">No hay capacitaciones</p>
-            )}
-
-            <button
-              onClick={() => setShowtraining(false)} 
-              className="mt-6 w-full p-2 rounded-lg bg-blue-500 text-white hover:bg-blue-600"
-            >
-              Cerrar
-            </button>
-          </div>
+{/* Modal de capacitaciones */}
+{showtraining && (
+  <div className="fixed inset-0 bg-black/50 flex items-center justify-center">
+    <div className="bg-white p-6 rounded-lg shadow-lg max-w-4xl w-full">
+      <h3 className="text-xl font-bold mb-4 text-center">Capacitaciones del Funcionario</h3>
+      {training.length > 0 ? (
+        <div className="overflow-x-auto">
+          <table className="min-w-full border-collapse border border-gray-300">
+            <thead>
+              <tr className="bg-gray-200">
+                <th className="border border-gray-300 px-4 py-2">Nombre</th>
+                <th className="border border-gray-300 px-4 py-2">Horas</th>
+                <th className="border border-gray-300 px-4 py-2">Nota</th>
+                <th className="border border-gray-300 px-4 py-2">Peso Relativo</th>
+              </tr>
+            </thead>
+            <tbody>
+              {training.map((capacitacion, index) => (
+                <tr key={index} className="border border-gray-300">
+                  <td className="border border-gray-300 px-4 py-2">{capacitacion.nombreCapacitacion}</td>
+                  <td className="border border-gray-300 px-4 py-2">{capacitacion.horasRealizadas}</td>
+                  <td className="border border-gray-300 px-4 py-2">{capacitacion.nota}</td>
+                  <td className="border border-gray-300 px-4 py-2">{capacitacion.PesoRelativo}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
+      ) : (
+        <p className="text-center text-gray-600">No hay capacitaciones</p>
       )}
+      <button onClick={() => setShowtraining(false)} className="mt-6 w-full p-2 rounded-lg bg-blue-500 text-white hover:bg-blue-600">
+        Cerrar
+      </button>
+    </div>
+  </div>
+)}
     </div>
   );
 };
