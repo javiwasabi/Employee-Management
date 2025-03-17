@@ -136,6 +136,8 @@ const UpdatePermissions: React.FC = () => {
           if (response.ok) {
             alert("Permiso eliminado correctamente");
             setPermissions((prev) => prev.filter((p) => p._id !== permisoId));
+            window.location.reload();
+
           } else {
             alert(data.message || "Error al eliminar el permiso");
           }
