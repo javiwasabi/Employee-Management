@@ -1,6 +1,6 @@
+
 const Permiso = require('../models/Permisos');
 const User = require('../models/User');
-
 async function agregarPermiso(permisoData, res) { 
     try {
         console.log("📩 Datos recibidos:", permisoData);
@@ -22,13 +22,14 @@ async function agregarPermiso(permisoData, res) {
         }
 
         console.log(`🔍 Buscando usuario objetivo con RUT: ${rut}...`);
-        const targetUser = await User.findOne({ rut }).populate("permisos");
+        const targetUser = await User.findOne({ rut });
 
         if (!targetUser) {
             console.error(`❌ Usuario con RUT ${rut} no encontrado.`);
             return res.status(404).json({ message: `Usuario con RUT: ${rut} no encontrado` });
         }
 
+        console.log("🔢 Convirtiendo nDias a número...");
         const dias = Number(nDias);
         if (isNaN(dias)) {
             console.error("❌ nDias no es un número válido.");
@@ -36,35 +37,18 @@ async function agregarPermiso(permisoData, res) {
         }
 
         console.log(`📝 Validando tipo de permiso: ${tipoPermiso}...`);
-
-        if (tipoPermiso === "Feriado Legal") {
-
-            const haTomadoFeriadoLargo = targetUser.permisos.some(Permiso =>
-                Permiso.tipoPermiso === "Feriado Legal"  && Permiso.nDias >= 10
-            );
-
-            if (!haTomadoFeriadoLargo && targetUser.feriadoLegal === 10 && dias < 10) {
-                console.log(`⚠️ Restricción: El usuario con RUT ${rut} debe tomar un feriado de al menos 10 días.`);
-                return res.status(400).json({ message: "Debes tomar un feriado de al menos 10 días cuando te quedan exactamente 10." });
-            }
-
-            if (!haTomadoFeriadoLargo) {
-                return res.status(400).json({ message: "Aún no ha tomado un feriado de al menos 10 días " });
-
-            }
-
-            if (targetUser.feriadoLegal - dias < 0) {
-                console.error("❌ No hay suficientes días de feriado legal.");
-                return res.status(400).json({ message: "No tienes suficientes días de feriado legal." });
-            }
-
-            targetUser.feriadoLegal -= dias;
-        } else if (tipoPermiso === "Día Administrativo") {
+        if (tipoPermiso === "Día Administrativo") {
             if (targetUser.diasAdministrativos - dias < 0) {
                 console.error("❌ No hay suficientes días administrativos disponibles.");
-                return res.status(400).json({ message: "No tienes suficientes días administrativos." });
+                return res.status(400).json({ message: "Daría un resultado negativo, no se puede aceptar" });
             }
             targetUser.diasAdministrativos -= dias;
+        } else if (tipoPermiso === "Feriado Legal") {
+            if (targetUser.feriadoLegal - dias < 0) {
+                console.error("❌ No hay suficientes días de feriado legal.");
+                return res.status(400).json({ message: "Daría un resultado negativo, no se puede aceptar" });
+            }
+            targetUser.feriadoLegal -= dias;
         } else if (tipoPermiso === "Horas Compensatorias") {
             targetUser.horasCompensatorias += dias;
         } else {
@@ -98,7 +82,6 @@ async function agregarPermiso(permisoData, res) {
         return res.status(500).json({ message: 'Error al agregar el permiso', error: error.message });
     }
 }
-
 
 
 async function eliminarPermiso(permisoData) {
