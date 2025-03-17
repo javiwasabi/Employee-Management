@@ -1,56 +1,58 @@
 
 const Permiso = require('../models/Permisos');
 const User = require('../models/User');
-async function agregarPermiso(permisoData, res) {
+async function agregarPermiso(permisoData, res) { 
     try {
-        console.log("🚀 Iniciando función agregarPermiso...");
-        console.log("📥 Datos recibidos:", permisoData);
+        console.log("📩 Datos recibidos:", permisoData);
 
         const { rut, rutadmin, estado, tipoPermiso, fechaSolicitud, fechaInicio, fechaTermino, nDias } = permisoData;
 
         console.log(`🔍 Buscando usuario administrador con RUT: ${rutadmin}...`);
         const adminUser = await User.findOne({ rut: rutadmin });
+
         if (!adminUser) {
-            console.error(`❌ Usuario administrador con RUT: ${rutadmin} no encontrado`);
+            console.error(`❌ Usuario administrador con RUT ${rutadmin} no encontrado.`);
             return res.status(404).json({ message: `Usuario administrador con RUT: ${rutadmin} no encontrado` });
         }
 
+        console.log("🔑 Verificando permisos del administrador...");
         if (!adminUser.permissions.includes("crear")) {
-            console.error("⛔ Permiso denegado: el usuario no tiene permisos para crear");
+            console.error("⛔ Permisos insuficientes para crear permisos.");
             return res.status(403).json({ message: 'Permisos no autorizados' });
         }
 
         console.log(`🔍 Buscando usuario objetivo con RUT: ${rut}...`);
         const targetUser = await User.findOne({ rut });
+
         if (!targetUser) {
-            console.error(`❌ Usuario con RUT: ${rut} no encontrado`);
+            console.error(`❌ Usuario con RUT ${rut} no encontrado.`);
             return res.status(404).json({ message: `Usuario con RUT: ${rut} no encontrado` });
         }
 
         console.log("🔢 Convirtiendo nDias a número...");
         const dias = Number(nDias);
         if (isNaN(dias)) {
-            console.error("❌ El número de días no es válido:", nDias);
+            console.error("❌ nDias no es un número válido.");
             return res.status(400).json({ message: "El número de días no es válido" });
         }
 
         console.log(`📝 Validando tipo de permiso: ${tipoPermiso}...`);
         if (tipoPermiso === "Día Administrativo") {
             if (targetUser.diasAdministrativos - dias < 0) {
-                console.error("⛔ Error: saldo insuficiente de días administrativos");
+                console.error("❌ No hay suficientes días administrativos disponibles.");
                 return res.status(400).json({ message: "Daría un resultado negativo, no se puede aceptar" });
             }
             targetUser.diasAdministrativos -= dias;
         } else if (tipoPermiso === "Feriado Legal") {
             if (targetUser.feriadoLegal - dias < 0) {
-                console.error("⛔ Error: saldo insuficiente de feriado legal");
+                console.error("❌ No hay suficientes días de feriado legal.");
                 return res.status(400).json({ message: "Daría un resultado negativo, no se puede aceptar" });
             }
             targetUser.feriadoLegal -= dias;
         } else if (tipoPermiso === "Horas Compensatorias") {
             targetUser.horasCompensatorias += dias;
         } else {
-            console.error("❌ Tipo de permiso no válido:", tipoPermiso);
+            console.error("❌ Tipo de permiso no válido.");
             return res.status(400).json({ message: "Tipo de permiso no válido" });
         }
 
@@ -62,28 +64,22 @@ async function agregarPermiso(permisoData, res) {
         let permisos = await Permiso.findOne({ rut });
 
         if (!permisos) {
-            console.log("📌 No existían permisos previos. Creando nuevo registro...");
+            console.log("🆕 No hay permisos previos, creando nuevo documento.");
             permisos = new Permiso({ rut, permisos: [] });
         }
 
         console.log("➕ Agregando nuevo permiso a la lista...");
-        permisos.permisos.push({
-            tipoPermiso,
-            estado,
-            fechaSolicitud,
-            fechaInicio,
-            fechaTermino,
-            nDias: dias
-        });
+        permisos.permisos.push(permisoData);
 
         console.log("💾 Guardando permisos en la base de datos...");
         await permisos.save();
 
         console.log("✅ Permiso agregado correctamente");
-        return res.status(200).json({ message: "Permiso agregado correctamente", permisos });
+
+        return res.status(200).json({ message: "Permiso agregado correctamente", user: targetUser, permiso: permisoData });
     } catch (error) {
         console.error("🔥 Error en agregarPermiso:", error);
-        return res.status(500).json({ message: "Error al agregar el permiso" });
+        return res.status(500).json({ message: 'Error al agregar el permiso', error: error.message });
     }
 }
 

@@ -22,14 +22,11 @@ router.delete('/eliminar-permiso/:rut', async (req, res) => {
 
 
 module.exports = router;
-
 router.post('/agregar/:rut', async (req, res) => {
-
-    const permisoData = req.body; 
+    const permisoData = req.body;
 
     try {
-        const permisoAgregado = await agregarPermiso(permisoData);
-        res.json({ message: 'Permiso agregado correctamente', permiso: permisoAgregado });
+        await agregarPermiso(permisoData, res); // ✅ Pasar res a la función
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
