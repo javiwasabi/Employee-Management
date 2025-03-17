@@ -34,7 +34,7 @@ const First: React.FC = () => {
 
         {/* Tarjeta 3 */}
         <Card
-          title="Registrar capacitaciones"
+          title="Registrar capacitación"
           description="Incorpora las capacitaciones con sus respectivos datos."
           onClick={() => navigate("/admin/capacitaciones")}
         />
@@ -49,7 +49,7 @@ const First: React.FC = () => {
         {/* Tarjeta 5 */}
         <Card
           title="Modificar Permisos y Capacitaciones"
-          description="Modifica los permisos de los usuarios."
+          description="Modifica los permisos y capacitaciones de los usuarios."
           onClick={() => navigate("/admin/updatePermisos")}
         />
       </div>

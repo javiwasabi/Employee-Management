@@ -91,7 +91,7 @@ const AgregarPermiso = () => {
                     <div>
                         <p className="text-gray-700 text-sm mb-1">Tipo de Permiso</p>
                         <div className="grid grid-cols-3 gap-1">
-                            {["Día Administrativo", "Feriado Legal", "Horas Compensatorias"].map((tipo) => (
+                            {["Día Administrativo", "Feriado Legal", "Horas Compensatorias", "Licencias Médicas"].map((tipo) => (
                                 <button
                                     key={tipo}
                                     type="button"
