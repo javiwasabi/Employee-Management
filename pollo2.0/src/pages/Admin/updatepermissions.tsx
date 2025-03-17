@@ -235,6 +235,33 @@ const UpdatePermissions: React.FC = () => {
           alert("No se pudo conectar con el servidor.");
       }
   };
+
+  const handleCompensatory = async (Hours: number, rut: string) => {
+    try {
+        const response = await fetch(`${API_URL}/users/add-compensatory-hours`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ rut, hoursToAdd: Hours})
+        });
+
+        const text = await response.text();
+        try {
+            const data = JSON.parse(text);
+            if (response.ok) {
+                alert("Horas compensatorias modificadas correctamente!");
+            } else {
+                alert(data.message || "Error al modificar las horas compensatorias");
+            }
+        } catch {
+            console.error("Respuesta inesperada:", text);
+            alert("Error inesperado en el servidor.");
+        }
+    } catch (error) {
+        console.error("Error al modificar las horas:", error);
+        alert("No se pudo conectar con el servidor.");
+    }
+};
+
   const [feriadosLegales, setFeriadosLegales] = useState(0);
   const [diasAdministrativos, setDiasAdministrativos] = useState(0);
   const [horasCompensatorias, setHorasCompensatorias] = useState(0);
@@ -314,7 +341,7 @@ const UpdatePermissions: React.FC = () => {
       {[
         { label: "Feriados Legales", value: feriadosLegales, setValue: setFeriadosLegales, handler: handleHoliday },
         { label: "Días Administrativos", value: diasAdministrativos, setValue: setDiasAdministrativos, handler: handleAdminDays },
-        { label: "Horas Compensatorias", value: horasCompensatorias, setValue: setHorasCompensatorias },
+        { label: "Horas Compensatorias", value: horasCompensatorias, setValue: setHorasCompensatorias, handler: handleCompensatory },
       ].map(({ label, value, setValue, handler }, index) => (
         <div key={index} className="flex justify-between items-center bg-gray-100 p-3 rounded-lg mt-2">
           <span className="font-medium">{label}: {value}</span>

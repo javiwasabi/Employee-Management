@@ -256,8 +256,6 @@ const deductAdministrativeDays = asyncHandler(async (req, res) => {
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
         }
-
-
         user.diasAdministrativos = daysToDeduct;
         console.log(user.diasAdministrativos)
         const updatedUser = await user.save();
@@ -289,7 +287,7 @@ const addCompensatoryHours = asyncHandler(async (req, res) => {
         }
         console.log(user.horasCompensatorias)
 
-        user.horasCompensatorias += hoursToAdd;
+        user.horasCompensatorias = hoursToAdd;
         const updatedUser = await user.save();
         console.log(user.horasCompensatorias)
 
