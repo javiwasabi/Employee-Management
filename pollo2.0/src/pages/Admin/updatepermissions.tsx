@@ -183,10 +183,71 @@ const UpdatePermissions: React.FC = () => {
         alert("No se pudo conectar con el servidor.");
       }
     };
+
+    const handleHoliday = async (feriadosAdd: number, rut: string) => {
+      try {
+          const response = await fetch(`${API_URL}/users/deduct-holiday`, {
+              method: "PATCH",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ rut, daysToDeduct: feriadosAdd })
+          });
+  
+          const text = await response.text();
+          try {
+              const data = JSON.parse(text);
+              if (response.ok) {
+                  alert("Feriado legal modificado correctamente");
+              } else {
+                  alert(data.message || "Error al modificar los días de feriado");
+              }
+          } catch {
+              console.error("Respuesta inesperada:", text);
+              alert("Error inesperado en el servidor.");
+          }
+      } catch (error) {
+          console.error("Error al modificar el feriado:", error);
+          alert("No se pudo conectar con el servidor.");
+      }
+  };
+  
+  const handleAdminDays = async (admDayAdd: number, rut: string) => {
+      try {
+          const response = await fetch(`${API_URL}/users/deduct-administrative-days`, {
+              method: "PATCH",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ rut, daysToDeduct: admDayAdd })
+          });
+  
+          const text = await response.text();
+          try {
+              const data = JSON.parse(text);
+              if (response.ok) {
+                  alert("Días administrativos modificados correctamente");
+              } else {
+                  alert(data.message || "Error al modificar los días administrativos");
+              }
+          } catch {
+              console.error("Respuesta inesperada:", text);
+              alert("Error inesperado en el servidor.");
+          }
+      } catch (error) {
+          console.error("Error al modificar días administrativos:", error);
+          alert("No se pudo conectar con el servidor.");
+      }
+  };
+  const [feriadosLegales, setFeriadosLegales] = useState(0);
+  const [diasAdministrativos, setDiasAdministrativos] = useState(0);
+  const [horasCompensatorias, setHorasCompensatorias] = useState(0);
+
+  useEffect(() => {
+    if (selectedWorker?.user) {
+      setFeriadosLegales(selectedWorker.user.feriadoLegal || 0);
+      setDiasAdministrativos(selectedWorker.user.diasAdministrativos || 0);
+      setHorasCompensatorias(selectedWorker.user.horasCompensatorias || 0);
+    }
+  }, [selectedWorker]);
+
     
-    
-    
-      
   
   return (
   <div className="relative bg-gradient-to-r from-gray-600 to-white min-h-screen flex items-center justify-center overflow-hidden p-4">
@@ -240,35 +301,59 @@ const UpdatePermissions: React.FC = () => {
     </div>
 
     {selectedWorker && (
-      <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4">
-        <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
-          <h3 className="text-xl font-bold mb-4 text-center">Datos del Funcionario</h3>
-  
-          <p><strong>Nombre:</strong> {selectedWorker.user.nombres} {selectedWorker.user.apellidos}</p>
-          <p><strong>RUT:</strong> {selectedWorker.user.rut}</p>
-          <p><strong>Cargo:</strong> {selectedWorker.user.cargo}</p>
-          <p><strong>Tipo de Contrato:</strong> {selectedWorker.user.tipoContrato}</p>
-          <p><strong>Feriados Legales:</strong> {selectedWorker.user.feriadoLegal}</p>
-          <p><strong>Días Administrativos:</strong> {selectedWorker.user.diasAdministrativos}</p>
-          <p><strong>Horas Compensatorias:</strong> {selectedWorker.user.horasCompensatorias}</p>
+  <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4">
+    <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
+      <h3 className="text-xl font-bold mb-4 text-center">Datos del Funcionario</h3>
 
-          <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-2">
-            <button
-              onClick={() => setShowPermissionsPopup(true)}
-              className="p-2 rounded-lg bg-blue-500 text-white hover:bg-blue-600"
-            >Ver Permisos</button>
-            <button
-              onClick={() => setShowtraining(true)}
-              className="p-2 rounded-lg bg-blue-500 text-white hover:bg-blue-600"
-            >Ver Capacitaciones</button>
-            <button
-              onClick={() => setSelectedWorker(null)}
-              className="p-2 rounded-lg bg-gray-500 text-white hover:bg-gray-600 col-span-1 sm:col-span-2"
-            >Cerrar</button>
+      <p><strong>Nombre:</strong> {selectedWorker.user.nombres} {selectedWorker.user.apellidos}</p>
+      <p><strong>RUT:</strong> {selectedWorker.user.rut}</p>
+      <p><strong>Cargo:</strong> {selectedWorker.user.cargo}</p>
+      <p><strong>Tipo de Contrato:</strong> {selectedWorker.user.tipoContrato}</p>
+
+      {/* Mejora de diseño para secciones con botones */}
+      {[
+        { label: "Feriados Legales", value: feriadosLegales, setValue: setFeriadosLegales, handler: handleHoliday },
+        { label: "Días Administrativos", value: diasAdministrativos, setValue: setDiasAdministrativos, handler: handleAdminDays },
+        { label: "Horas Compensatorias", value: horasCompensatorias, setValue: setHorasCompensatorias },
+      ].map(({ label, value, setValue, handler }, index) => (
+        <div key={index} className="flex justify-between items-center bg-gray-100 p-3 rounded-lg mt-2">
+          <span className="font-medium">{label}: {value}</span>
+          <div className="flex items-center gap-1">
+            <button onClick={() => setValue(prev => prev + 1)} className="p-1 bg-gray-200 hover:bg-gray-300 rounded">▲</button>
+            <button onClick={() => setValue(prev => Math.max(prev - 1, 0))} className="p-1 bg-gray-200 hover:bg-gray-300 rounded">▼</button>
+            {handler && (
+              <button onClick={() => handler(value, selectedWorker?.user.rut)} className="p-1 text-sm bg-blue-500 text-white rounded hover:bg-blue-600">
+                Guardar
+              </button>
+            )}
           </div>
         </div>
+      ))}
+
+      {/* Botones de acciones */}
+      <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-2">
+        <button
+          onClick={() => setShowPermissionsPopup(true)}
+          className="p-2 rounded-lg bg-blue-500 text-white hover:bg-blue-600"
+        >
+          Ver Permisos
+        </button>
+        <button
+          onClick={() => setShowtraining(true)}
+          className="p-2 rounded-lg bg-blue-500 text-white hover:bg-blue-600"
+        >
+          Ver Capacitaciones
+        </button>
+        <button
+          onClick={() => setSelectedWorker(null)}
+          className="p-2 rounded-lg bg-gray-500 text-white hover:bg-gray-600 col-span-1 sm:col-span-2"
+        >
+          Cerrar
+        </button>
       </div>
-    )}
+    </div>
+  </div>
+)}
 
 {showPermissionsPopup && (
   <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4">
