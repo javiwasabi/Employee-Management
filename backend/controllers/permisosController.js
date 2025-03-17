@@ -108,7 +108,7 @@ async function eliminarPermiso(permisoData) {
         // Revertir los días en función del tipo de permiso eliminado
         if (tipoPermiso === "Día Administrativo") {
             targetUser.diasAdministrativos += dias;
-        } else if (tipoPermiso === "Feriado Legal") {
+        } else if ((tipoPermiso === "Feriado Legal") && (tipoPermiso === "Feriado")) {
             targetUser.feriadoLegal += dias;
         } else if (tipoPermiso === "Horas Compensatorias") {
             targetUser.horasCompensatorias -= dias;
