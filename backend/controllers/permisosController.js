@@ -1,4 +1,4 @@
-const { useState } = require('react');
+
 const Permiso = require('../models/Permisos');
 const User = require('../models/User');
 async function agregarPermiso(permisoData, res) { 
