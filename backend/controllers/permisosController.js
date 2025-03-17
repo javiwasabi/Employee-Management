@@ -39,8 +39,8 @@ async function agregarPermiso(permisoData, res) {
 
         if (tipoPermiso === "Feriado Legal") {
 
-            const haTomadoFeriadoLargo = targetUser.permisos.some(permiso =>
-                permiso.tipoPermiso === "Feriado Legal"  && permiso.nDias >= 10
+            const haTomadoFeriadoLargo = targetUser.permisos.some(Permiso =>
+                Permiso.tipoPermiso === "Feriado Legal"  && Permiso.nDias >= 10
             );
 
             if (!haTomadoFeriadoLargo && targetUser.feriadoLegal === 10 && dias < 10) {
