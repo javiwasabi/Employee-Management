@@ -105,16 +105,18 @@ async function eliminarPermiso(permisoData) {
             return { error: "El número de días en el permiso no es válido", status: 400 };
         }
 
-        // Revertir los días en función del tipo de permiso eliminado
-        if (tipoPermiso === "Día Administrativo") {
+        const tipoPermisoNormalizado = tipoPermiso.trim().toLowerCase();
+
+        if (tipoPermisoNormalizado === "día administrativo"|| tipoPermisoNormalizado === "día adm.") {
             targetUser.diasAdministrativos += dias;
-        } else if ((tipoPermiso === "Feriado Legal") && (tipoPermiso === "Feriado")) {
+        } else if (tipoPermisoNormalizado === "feriado legal" || tipoPermisoNormalizado === "feriado") {
             targetUser.feriadoLegal += dias;
-        } else if (tipoPermiso === "Horas Compensatorias") {
+        } else if (tipoPermisoNormalizado === "horas compensatorias") {
             targetUser.horasCompensatorias -= dias;
         } else {
             return { error: "Tipo de permiso no válido", status: 400 };
         }
+        
 
         // Guardar los cambios en el usuario
         await targetUser.save();
