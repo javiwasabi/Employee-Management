@@ -1,10 +1,24 @@
 const express = require('express');
 const router = express.Router();
 
-const { agregarCapacitacion, getCapacitaciones, getCapacitacionPorRut } = require('../controllers/capacitacionController');
+const { agregarCapacitacion, getCapacitaciones, getCapacitacionPorRut, eliminarCapacitacion} = require('../controllers/capacitacionController');
 router.get('/listar/capacitaciones', getCapacitaciones);
 
 router.get('/listar/:rut', getCapacitacionPorRut);
+
+
+router.delete('/eliminar/:rut', async (req, res) => {
+    console.log("Datos recibidos en DELETE:", req.params, req.body); 
+
+    const CapacitacionData = req.body; 
+    const result = await eliminarCapacitacion(CapacitacionData);
+
+    if (result.error) {
+        return res.status(result.status).json({ message: result.error });
+    }
+
+    res.json({ message: result.message, permiso: result.user });
+});
 
 router.post('/agregar/:rut', async (req, res) => {
     const { rut } = req.params;

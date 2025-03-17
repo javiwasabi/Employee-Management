@@ -85,7 +85,53 @@ const getCapacitacionPorRut = async (req, res) => {
         res.status(500).json({ message: "Error al obtener capacitaciones por RUT", error });
     }
 };
+async function eliminarCapacitacion(capacitacionData) {
+    try {
+        const { rutAdmin, rutmodi, capacitacionId, nombreCapacitacion, horasRealizadas, nota, PesoRelativo } = capacitacionData;
+
+        // Buscar al usuario administrador
+        const adminUser = await User.findOne({ rut: rutAdmin });
+        if (!adminUser) {
+            return { error: `Usuario administrador con RUT: ${rutAdmin} no encontrado`, status: 404 };
+        }
+
+        // Verificar permisos del administrador
+        if (!adminUser.permissions.includes("eliminar")) {
+            return { error: "Permisos no autorizados", status: 403 };
+        }
+
+        // Buscar usuario al que se le eliminará la capacitación
+        const targetUser = await User.findOne({ rut: rutmodi });
+        if (!targetUser) {
+            return { error: `Usuario con RUT: ${rutmodi} no encontrado`, status: 404 };
+        }
+
+        // Buscar las capacitaciones del usuario
+        let capacitaciones = await Capacitacion.findOne({ rut: rutmodi });
+        if (!capacitaciones) {
+            return { error: `No se encontraron capacitaciones para el usuario con RUT: ${rutmodi}`, status: 404 };
+        }
+
+        // Buscar la capacitación a eliminar
+        const capacitacionIndex = capacitaciones.capacitaciones.findIndex(c => c._id.toString() === capacitacionId);
+        if (capacitacionIndex === -1) {
+            return { error: "Capacitación no encontrada", status: 404 };
+        }
+
+        // Eliminar la capacitación de la lista
+        capacitaciones.capacitaciones.splice(capacitacionIndex, 1);
+
+        // Guardar los cambios en la colección de capacitaciones
+        await capacitaciones.save();
+
+        return { success: true, message: "Capacitación eliminada correctamente", user: targetUser };
+    } catch (error) {
+        console.error(error);
+        return { error: "Error al eliminar la capacitación", status: 500 };
+    }
+}
 
 
-module.exports = { agregarCapacitacion, getCapacitaciones, getCapacitacionPorRut };
+
+module.exports = { agregarCapacitacion, getCapacitaciones, getCapacitacionPorRut, eliminarCapacitacion };
 
