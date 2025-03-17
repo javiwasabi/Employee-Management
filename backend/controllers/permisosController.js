@@ -99,8 +99,7 @@ async function agregarPermiso(permisoData, res) {
     }
 }
 
-const Permiso = require('../models/Permisos');
-const User = require('../models/User');
+
 
 async function modificarPermiso(permisoData, res) { 
     try {
