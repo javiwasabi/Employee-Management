@@ -52,6 +52,11 @@ const First: React.FC = () => {
           description="Modifica los permisos y capacitaciones de los usuarios."
           onClick={() => navigate("/admin/updatePermisos")}
         />
+          <Card
+          title="Agregar/Eliminar Funcionario"
+          description="Agrega o elimina un usuario"
+          onClick={() => navigate("/admin/updateUsers")}
+        />
       </div>
     </div>
   );

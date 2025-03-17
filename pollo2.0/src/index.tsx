@@ -15,6 +15,7 @@ import CalendarLanding from "./pages/Employee/disponibilidad";
 import FirstLanding from "./pages/Employee/first";
 import ShowWorkersEmployee from "./pages/Employee/visualizacion";
 import UpdatePermissions from "./pages/Admin/updatepermissions";
+import CreateUsers from "./pages/Admin/updateUsers";
 document.title = "Permisos y capacitaciones";
 
 const root = ReactDOM.createRoot(document.getElementById("root") as HTMLElement);
@@ -35,6 +36,7 @@ root.render(
             <Route path="/admin/permisos" element={<AgregarPermiso />} />
             <Route path="/admin/capacitaciones" element={<AgregarCapacitacion />} />
             <Route path="/admin/updatePermisos" element={<UpdatePermissions />} />
+            <Route path="/admin/updateUsers" element={<CreateUsers />} />
           </Route>
 
 

@@ -261,6 +261,36 @@ const UpdatePermissions: React.FC = () => {
         alert("No se pudo conectar con el servidor.");
     }
 };
+const handlemodificarPermiso= async (permisoItem: any) => {
+  const { _id: capacitacionId, nombreCapacitacion, horasRealizadas, nota, PesoRelativo } = permisoItem;
+
+  try {
+    const response = await fetch(`${API_URL}/permisos/modificar-permiso/${rutmodi}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ capacitacionId, rutAdmin, rutmodi, nombreCapacitacion, horasRealizadas, nota, PesoRelativo })
+    });
+
+    const text = await response.text();
+    try {
+      const data = JSON.parse(text);
+      if (response.ok) {
+        alert("Permiso corregido correctamente");
+        setTraining((prev) => prev.filter((c) => c._id !== capacitacionId));
+        window.location.reload();
+      } else {
+        alert(data.message || "Error al modificar permiso");
+      }
+    } catch (jsonError) {
+      console.error("Respuesta inesperada:", text);
+      alert("Error inesperado en el servidor.");
+    }
+  } catch (error) {
+    console.error("Error al modificar :", error);
+    alert("No se pudo conectar con el servidor.");
+  }
+};
+
 
   const [feriadosLegales, setFeriadosLegales] = useState(0);
   const [diasAdministrativos, setDiasAdministrativos] = useState(0);
@@ -418,6 +448,7 @@ const UpdatePermissions: React.FC = () => {
                       >
                         Eliminar
                       </button>
+                    
                     </td>
                   </tr>
                 ))

@@ -98,6 +98,10 @@ const getUserByRut = asyncHandler(async (req, res) => {
 // @access Private
 const createUser = asyncHandler(async (req, res) => {
     const users = req.body; 
+    console.log("Datos recibidos en el backend:", req.body); // Debug
+    if (!Array.isArray(users) || users.length === 0) {
+        return res.status(400).json({ message: 'Please provide an array of users' });
+    }
 
     if (!Array.isArray(users) || users.length === 0) {
         return res.status(400).json({ message: 'please provide an array of users' });
@@ -122,6 +126,8 @@ const createUser = asyncHandler(async (req, res) => {
             feriadoLegal, diasAdministrativos, horasCompensatorias, 
             email, password: hashedPassword 
         });
+        console.log("Guardando usuario:", newUser);
+
 
         return newUser;
     });
