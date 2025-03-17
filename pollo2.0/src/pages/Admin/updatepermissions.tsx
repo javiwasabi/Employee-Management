@@ -153,6 +153,37 @@ const UpdatePermissions: React.FC = () => {
         alert("No se pudo conectar con el servidor.");
       }
     };
+
+    const handleEliminarCapacitacion = async (capacitacionItem: any) => {
+      const { _id: capacitacionId, nombreCapacitacion, horasRealizadas, nota, PesoRelativo } = capacitacionItem;
+    
+      try {
+        const response = await fetch(`${API_URL}/capacitaciones/eliminar/${rutmodi}`, {
+          method: "DELETE",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ capacitacionId, rutAdmin, rutmodi, nombreCapacitacion, horasRealizadas, nota, PesoRelativo })
+        });
+    
+        const text = await response.text();
+        try {
+          const data = JSON.parse(text);
+          if (response.ok) {
+            alert("Capacitación eliminada correctamente");
+            setTraining((prev) => prev.filter((c) => c._id !== capacitacionId));
+            window.location.reload();
+          } else {
+            alert(data.message || "Error al eliminar la capacitación");
+          }
+        } catch (jsonError) {
+          console.error("Respuesta inesperada:", text);
+          alert("Error inesperado en el servidor.");
+        }
+      } catch (error) {
+        console.error("Error al eliminar la capacitación:", error);
+        alert("No se pudo conectar con el servidor.");
+      }
+    };
+    
     
     
       
@@ -297,31 +328,55 @@ const UpdatePermissions: React.FC = () => {
 )}
 
 
-    {showtraining && (
-      <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4">
-        <div className="bg-white p-6 rounded-lg shadow-lg max-w-4xl w-full">
-          <h3 className="text-xl font-bold mb-4 text-center">Capacitaciones del Funcionario</h3>
-          {training.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-              {training.map((capacitacion, index) => (
-                <div key={index} className="border p-4 rounded-lg shadow-md bg-gray-100">
-                  <p><strong>Nombre:</strong> {capacitacion.nombreCapacitacion}</p>
-                  <p><strong>Horas:</strong> {capacitacion.horasRealizadas}</p>
-                  <p><strong>Nota:</strong> {capacitacion.nota}</p>
-                  <p><strong>Peso:</strong> {capacitacion.PesoRelativo}</p>
-                </div>
+{showtraining && (
+  <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4">
+    <div className="bg-white p-6 rounded-lg shadow-lg max-w-4xl w-full">
+      <h3 className="text-xl font-bold mb-4 text-center">Capacitaciones del Funcionario</h3>
+      {training.length > 0 ? (
+        <div className="overflow-x-auto">
+          <table className="min-w-full bg-white border border-gray-200">
+            <thead>
+              <tr className="bg-gray-200">
+                <th className="px-4 py-2 border">Nombre</th>
+                <th className="px-4 py-2 border">Horas</th>
+                <th className="px-4 py-2 border">Nota</th>
+                <th className="px-4 py-2 border">Peso</th>
+                <th className="px-4 py-2 border">Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              {training.map((capacitacion) => (
+                <tr key={capacitacion._id} className="text-center border">
+                  <td className="px-4 py-2 border">{capacitacion.nombreCapacitacion}</td>
+                  <td className="px-4 py-2 border">{capacitacion.horasRealizadas}</td>
+                  <td className="px-4 py-2 border">{capacitacion.nota}</td>
+                  <td className="px-4 py-2 border">{capacitacion.PesoRelativo}</td>
+                  <td className="px-4 py-2 border">
+                    <button
+                      onClick={() => handleEliminarCapacitacion(capacitacion)}
+                      className="px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600"
+                    >
+                      Eliminar
+                    </button>
+                  </td>
+                </tr>
               ))}
-            </div>
-          ) : (
-            <p className="text-center text-gray-600">No hay capacitaciones</p>
-          )}
-          <button
-            onClick={() => setShowtraining(false)}
-            className="mt-6 w-full p-2 rounded-lg bg-blue-500 text-white hover:bg-blue-600"
-          >Cerrar</button>
+            </tbody>
+          </table>
         </div>
-      </div>
-    )}
+      ) : (
+        <p className="text-center text-gray-600">No hay capacitaciones</p>
+      )}
+      <button
+        onClick={() => setShowtraining(false)}
+        className="mt-6 w-full p-2 rounded-lg bg-blue-500 text-white hover:bg-blue-600"
+      >
+        Cerrar
+      </button>
+    </div>
+  </div>
+)}
+
   </div>
 );
 };
