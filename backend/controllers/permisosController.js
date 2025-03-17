@@ -135,8 +135,6 @@ async function eliminarPermiso(permisoData) {
 }
 
 
-
-
 const getPermisos = async (req, res) => {
     try {
         const permisos = await Permiso.find(); 
