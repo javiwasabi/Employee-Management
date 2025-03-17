@@ -74,33 +74,33 @@ const ShowWorkers: React.FC = () => {
     }
   };
   useEffect(() => {
-    const fetchUsersByLetter = async () => {
-      if (!searchLetter) return;
-
-      setLoading(true);
-      setError("");
-      try {
-        const response = await fetch(`/users/buscar-inicial?letter=${searchLetter}`);
-
-        const data = await response.json();
-
-        if (!response.ok) throw new Error(data.message || "Error al obtener datos");
-        
-        setUsers(data.users);
-      }catch (err) {
-        if (err instanceof Error) {
-          setError(err.message);
-        } else {
-          setError("Ocurrió un error desconocido");
-        }      
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchUsersByLetter();
-  }, [searchLetter]);
-
+        const fetchUsersByLetter = async () => {
+          if (!searchLetter) return;
+    
+          setLoading(true);
+          setError("");
+          try {
+            const response = await fetch(`${API_URL}/users/buscar-inicial?letter=${searchLetter}`);
+            console.log("Respuesta del servidor:", response); 
+            const data = await response.json();
+    
+            if (!response.ok) throw new Error(data.message || "Error al obtener datos");
+            
+            setUsers(data.users);
+          }catch (err) {
+            if (err instanceof Error) {
+              setError(err.message);
+            } else {
+              setError("Ocurrió un error desconocido");
+            }      
+          } finally {
+            setLoading(false);
+          }
+        };
+    
+        fetchUsersByLetter();
+      }, [searchLetter]);
+    
 
   useEffect(() => {
     if (searchRut.trim().length > 0) {
