@@ -24,7 +24,7 @@ const UpdatePermissions: React.FC = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
     const [searchLetter, setSearchLetter] = useState("");
-    const [users, setUsers] = useState<{ nombres: string; rut: string }[]>([]);
+    const [users, setUsers] = useState<{ nombres: string; apellidos:string; rut: string }[]>([]);
     const [rutmodi, setRutmodi] = useState("");
 
     const rutAdmin = localStorage.getItem("rut");
@@ -230,7 +230,7 @@ const UpdatePermissions: React.FC = () => {
         {users.length > 0 ? (
           users.map((user) => (
             <li key={user.rut} className="p-2 border-b border-white/50">
-              {user.nombres} - {user.rut}
+              {user.nombres} {user.apellidos} - {user.rut}
             </li>
           ))
         ) : (
