@@ -226,12 +226,8 @@ const deductHoliday = asyncHandler(async (req, res) => {
             return res.status(404).json({ message: 'User not found' });
         }
 
-        if (user.FeriadoLegal < daysToDeduct) {
-            return res.status(400).json({ message: 'Insufficient holiday days' });
-        }
-        console.log(user.feriadoLegal)
 
-        user.feriadoLegal -= daysToDeduct;
+        user.feriadoLegal = daysToDeduct;
         const updatedUser = await user.save();
         console.log(user.feriadoLegal)
 
@@ -261,12 +257,8 @@ const deductAdministrativeDays = asyncHandler(async (req, res) => {
             return res.status(404).json({ message: 'User not found' });
         }
 
-        if (user.DiasAdministrativos < daysToDeduct) {
-            return res.status(400).json({ message: 'Insufficient administrative days' });
-        }
-        console.log(daysToDeduct)
 
-        user.diasAdministrativos -= daysToDeduct;
+        user.diasAdministrativos = daysToDeduct;
         console.log(user.diasAdministrativos)
         const updatedUser = await user.save();
 
@@ -337,6 +329,8 @@ const updateRolePermissions = asyncHandler(async (req, res) => {
   
     res.status(200).json({ message: "Permisos actualizados", permissions: user.permissions });
 });
+
+
 const removeRolePermissions = asyncHandler(async (req, res) => {
     const { rut, permissions } = req.body;
 

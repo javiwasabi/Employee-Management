@@ -16,7 +16,6 @@ router
     .patch('/deduct-holiday', usersController.deductHoliday) 
     .patch('/deduct-administrative-days', usersController.deductAdministrativeDays)  
     .patch('/add-compensatory-hours', usersController.addCompensatoryHours)
-    .patch('/change', usersController.switchAllUsers)
     .get('/buscar-inicial',usersController.getUsersByInitial);
 
 router
