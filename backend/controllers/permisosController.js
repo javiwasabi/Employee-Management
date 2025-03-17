@@ -22,7 +22,7 @@ async function agregarPermiso(permisoData, res) {
         }
 
         console.log(`🔍 Buscando usuario objetivo con RUT: ${rut}...`);
-        const targetUser = await User.findOne({ rut }).populate("permisos");
+        const targetUser = await User.findOne({ rut });
 
         if (!targetUser) {
             console.error(`❌ Usuario con RUT ${rut} no encontrado.`);
@@ -35,41 +35,6 @@ async function agregarPermiso(permisoData, res) {
             console.error("❌ nDias no es un número válido.");
             return res.status(400).json({ message: "El número de días no es válido" });
         }
-
-        try {
-            console.log("🔍 Buscando permisos previos de Feriado Legal...");
-            const permisos = await Permiso.find({ rut });
-        
-            // Verificar si el usuario tiene algún permiso de Feriado Legal de 10 días o más
-            let haTomadoFeriadoLargo = false;
-            permisos.forEach(permisoDoc => {
-                permisoDoc.permisos.forEach(p => {
-                    if (p.tipoPermiso === "Feriado Legal" && p.nDias >= 10) {
-                        haTomadoFeriadoLargo = true;
-                    }
-                });
-            });
-        
-            if (haTomadoFeriadoLargo) {
-                console.log("✅ El usuario ya ha tomado un Feriado Legal de 10 días o más. No se requiere restricción.");
-            } else {
-                if (targetUser.feriadoLegal === 10 && tipoPermiso === "Feriado Legal" && dias < 10) {
-                    console.error("❌ Debes tomar un feriado de al menos 10 días cuando te quedan exactamente 10.");
-                    return res.status(400).json({ message: "Debes tomar un feriado de al menos 10 días cuando te quedan exactamente 10." });
-                }
-        
-                if (targetUser.feriadoLegal > 10 && tipoPermiso === "Feriado Legal" && (10 - dias < 0)) {
-                    console.error("❌ No puedes tomar menos de 10 días hasta que hayas tomado un feriado de al menos 10.");
-                    return res.status(400).json({ message: "No puedes tomar esa cantidad de días dado que aún no has tomado tu feriado de 10 días (o más)." });
-                }
-        
-                console.warn("⚠️ Recuerda que aún no has tomado un Feriado Legal de al menos 10 días.");
-            }
-        } catch (error) {
-            console.error("🔥 Error al obtener los permisos por RUT:", error);
-            return res.status(500).json({ message: "Error al obtener los permisos por RUT", error });
-        }
-        
 
         console.log(`📝 Validando tipo de permiso: ${tipoPermiso}...`);
         if (tipoPermiso === "Día Administrativo") {
