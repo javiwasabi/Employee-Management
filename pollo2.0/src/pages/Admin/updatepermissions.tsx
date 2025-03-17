@@ -78,6 +78,9 @@ const UpdatePermissions: React.FC = () => {
         setTraining([]); 
       }
     };
+
+
+
     useEffect(() => {
       const fetchUsersByLetter = async () => {
         if (!searchLetter) return;
@@ -85,8 +88,8 @@ const UpdatePermissions: React.FC = () => {
         setLoading(true);
         setError("");
         try {
-          const response = await fetch(`/users/buscar-inicial?letter=${searchLetter}`);
-  
+          const response = await fetch(`${API_URL}/users/buscar-inicial?letter=${searchLetter}`);
+          console.log("Respuesta del servidor:", response); 
           const data = await response.json();
   
           if (!response.ok) throw new Error(data.message || "Error al obtener datos");
