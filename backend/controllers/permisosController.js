@@ -58,7 +58,7 @@ async function agregarPermiso(permisoData, res) {
                     return res.status(400).json({ message: "Debes tomar un feriado de al menos 10 días cuando te quedan exactamente 10." });
                 }
         
-                if (targetUser.feriadoLegal > 10 && tipoPermiso === "Feriado Legal" && dias < 10) {
+                if (targetUser.feriadoLegal > 10 && tipoPermiso === "Feriado Legal" && (10 - dias < 0)) {
                     console.error("❌ No puedes tomar menos de 10 días hasta que hayas tomado un feriado de al menos 10.");
                     return res.status(400).json({ message: "No puedes tomar esa cantidad de días dado que aún no has tomado tu feriado de 10 días (o más)." });
                 }
