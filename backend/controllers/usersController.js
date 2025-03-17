@@ -215,7 +215,7 @@ const updateUser = asyncHandler(async (req, res) => {
 const deductHoliday = asyncHandler(async (req, res) => {
     const { rut, daysToDeduct } = req.body;
 
-    if (!rut || !daysToDeduct) {
+    if (!rut ) {
         return res.status(400).json({ message: 'rut and daysToDeduct are required' });
     }
 
@@ -246,7 +246,7 @@ const deductHoliday = asyncHandler(async (req, res) => {
 const deductAdministrativeDays = asyncHandler(async (req, res) => {
     const { rut, daysToDeduct } = req.body;
 
-    if (!rut || !daysToDeduct) {
+    if (!rut ) {
         return res.status(400).json({ message: 'rut and daysToDeduct are required' });
     }
 
@@ -275,7 +275,7 @@ const deductAdministrativeDays = asyncHandler(async (req, res) => {
 const addCompensatoryHours = asyncHandler(async (req, res) => {
     const { rut, hoursToAdd } = req.body;
 
-    if (!rut || !hoursToAdd) {
+    if (!rut ) {
         return res.status(400).json({ message: 'rut and hoursToAdd are required' });
     }
 
